@@ -70,6 +70,7 @@ public class YoutubeUtil {
 				String title = result.getSnippet().getTitle();
 				Date uploadAt = new Date(result.getSnippet().getPublishedAt().getValue());
 				Date now = new Date();
+//				System.out.println(now.getTime()-300000+" "+uploadAt.getTime()+" "+ now.getTime());
 				if(uploadAt.getTime()<=now.getTime()&&uploadAt.getTime()>=now.getTime()-300) {
 					String videoUrl = "https://www.youtube.com/watch?v=" + videoId;
 					String msg =  "**"+ result.getSnippet().getChannelTitle()+"** 에 새로운 영상이 올라왔습니다." +System.getProperty("line.separator");

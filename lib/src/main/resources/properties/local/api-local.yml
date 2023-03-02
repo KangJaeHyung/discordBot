@@ -49,7 +49,7 @@ gpt:
   
 google:
   apiKey: ENC(TYazvq4Fsz2XJKyW+oiv+ueM1zIEC37/zgdqc9kl97IlKjmfJLJ1L2dmZdN9iiu1)
-  channelIds: UCL3gnarNIeI_M0cFxjNYdAA,UCzjp53OM5d3QOB8_D6-teBw,UCfcfymsN3OMo2cfmbpGTanw
+  channelIds: UCL3gnarNIeI_M0cFxjNYdAA,UCzjp53OM5d3QOB8_D6-teBw,UCfcfymsN3OMo2cfmbpGTanw,UCUHcLZNBLB3IpdBQQb3Cr_Q,UCpHqtGZFWHfDpqEDCS5xY7g,UCpHqtGZFWHfDpqEDCS5xY7g
 
 jasypt:
   encryptor:
