@@ -1,0 +1,56 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+
+
+---
+spring:
+  profiles: local
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        format_sql: true
+        show_sql: true         
+        use_sql_comments: true
+        jdbc.batch_size: 20
+        order_inserts: true
+
+
+httpclient:
+  connectTimeout: 5000
+  socketTimeout: 20000
+  poolMaxTotal: 20
+  poolDefaultMaxPerRoute: 2
+  poolValidateAfterInactivity: 2000
+  reuseHttpClient: false
+
+lostark:
+  api:
+    profile: https://developer-lostark.game.onstove.com/armories/characters/{0}/profile #상태
+    equipment: https://developer-lostark.game.onstove.com/armories/characters/{0}/equipment #장비
+    arvatars: https://developer-lostark.game.onstove.com/armories/characters/{0}/arvatars #아바타
+    skill: https://developer-lostark.game.onstove.com/armories/characters/{0}/combat-skills #스킬
+    engraving: https://developer-lostark.game.onstove.com/armories/characters/{0}/engraving #각인
+    card: https://developer-lostark.game.onstove.com/armories/characters/{0}/cards #카드
+    gem: https://developer-lostark.game.onstove.com/armories/characters/{0}/gems #보석
+    
+
+
+discord:
+  token_1: ENC(/RDSgqSKPyKM/dIOZaK5A8FoDOXdqO2oymkuTDXTeo0Qjum7aR8VCrllLeSaZ3e9)
+  token_2: ENC(nXZ0ujWv7doFENc4otQENnIdKwdECSt5Kr6FRFnuGl3JYIiTcWCzvGHllHqKDiMK)
+  
+gpt:
+  url: https://api.openai.com/v1/completions
+  auth: ENC(jUlyq5orvXq8LVFIx6OJyaSv5iwNGFjdVHREYs9m0VEm4rpvC2Bjno1VEsB4m16i1sa4GCpZY6d7MCERWaLXMw==)
+  
+google:
+  apiKey: ENC(TYazvq4Fsz2XJKyW+oiv+ueM1zIEC37/zgdqc9kl97IlKjmfJLJ1L2dmZdN9iiu1)
+  channelIds: UCL3gnarNIeI_M0cFxjNYdAA,UCzjp53OM5d3QOB8_D6-teBw,UCfcfymsN3OMo2cfmbpGTanw
+
+jasypt:
+  encryptor:
+    bean: jasyptPropertiesEncryptor
