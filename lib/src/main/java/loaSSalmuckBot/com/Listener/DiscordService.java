@@ -10,6 +10,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
+import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
@@ -19,22 +22,15 @@ import net.dv8tion.jda.api.utils.FileUpload;
 
 @Service
 public class DiscordService {
-//	@Autowired
-//	public UserRepository userRepsitory;
+	@Autowired
+	public VoiceChannelRepository voiceChannelRepository;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
 	
 	
 
-//	public TestDto createUser(UserDto dto) {
-//		UserEntity entity = new UserEntity();
-//		entity.setId(dto.getId());
-//		entity.setNickname(dto.getNickname());
-//		userRepsitory.save(entity);
-//		return null;
-//	}
-
+	
 	public void valtan(SlashCommandInteractionEvent event) {
 		Integer gateway = event.getOption("gateway") == null ? 1 : event.getOption("gateway").getAsInt();
 

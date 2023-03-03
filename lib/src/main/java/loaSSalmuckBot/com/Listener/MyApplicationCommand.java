@@ -30,7 +30,10 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 public class MyApplicationCommand extends ListenerAdapter {
 
 	@Autowired
-	public DiscordService service;
+	public DiscordService discordService;
+	
+	@Autowired
+	public VoiceService voiceService;
 
 	@Autowired
 	private LoaRestAPI api;
@@ -48,32 +51,51 @@ public class MyApplicationCommand extends ListenerAdapter {
 			this.createChannel(event);
 			break;
 		}
+		case "채널이동부여": {
+			try {
+				voiceService.createGivenCreateChannel(event);
+			} catch (Exception e) {
+				event.reply("채널 이동 이벤트 생성이 완료 되지 못하였습니다. 다시 시도해 주세요").queue();
+			}
+			
+			break;
+		}
+		case "채널이동삭제": {
+			try {
+				voiceService.deleteGivenCreateChannel(event);
+				event.reply("채널 이동 이벤트가 삭제되었습니다.").queue();
+			} catch (Exception e) {
+				event.reply("채널 이동 이벤트 생성이 삭제되지 못 하였습니다. 다시 시도해 주세요").queue();
+			}
+			
+			break;
+		}
 		case "발탄": {
-			service.valtan(event);
+			discordService.valtan(event);
 			break;
 		}
 		case "비아키스": {
-			service.biackiss(event);
+			discordService.biackiss(event);
 			break;
 		}
 		case "쿠크세이튼": {
-			service.kuoku(event);
+			discordService.kuoku(event);
 			break;
 		}
 		case "아브렐슈드": {
-			service.abrelshud(event);
+			discordService.abrelshud(event);
 			break;
 		}
 		case "카양겔": {
-			service.kayangel(event);
+			discordService.kayangel(event);
 			break;
 		}
 		case "일리아칸": {
-			service.illiakan(event);
+			discordService.illiakan(event);
 			break;
 		}
 		case "상아탑": {
-			service.tower(event);
+			discordService.tower(event);
 			break;
 		}
 		case "경매": {
@@ -133,6 +155,12 @@ public class MyApplicationCommand extends ListenerAdapter {
 		data.add(Commands.slash("경매", "선점 입찰가 및 1/N 입찰가를 알려줍니다").addOption(OptionType.INTEGER, "gold", "가격", true)
 				.addOption(OptionType.INTEGER, "person", "인원수", false));
 		data.add(Commands.slash("채널생성", "음성 채널을 생성합니다.").addOption(OptionType.STRING, "name", "채널이름", true));
+		data.add(Commands.slash("채널이동부여", "음성 채널 생성 및 이동 이벤트를 부여합니다.")
+				.addOption(OptionType.CHANNEL, "channel", "채널이름", true)
+				.addOption(OptionType.STRING, "name", "생성될 채널이름", true));
+		data.add(Commands.slash("채널이동삭제", "음성 채널 생성 및 이동 이벤트를 삭제합니다")
+				.addOption(OptionType.CHANNEL, "channel", "채널이름", true));
+		
 		data.add(Commands.slash("발탄", "발탄 공략을 보여줍니다.").addOption(OptionType.INTEGER, "gateway", "관문", false));
 		data.add(Commands.slash("비아키스", "비아키스 공략을 보여줍니다.").addOption(OptionType.INTEGER, "gateway", "관문", false));
 		data.add(Commands.slash("쿠크세이튼", "쿠크세이튼 공략을 보여줍니다.").addOption(OptionType.INTEGER, "gateway", "관문", false));
@@ -211,7 +239,7 @@ public class MyApplicationCommand extends ListenerAdapter {
 	
 	@Override
 	public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-		service.choiceFormate(event);
+		discordService.choiceFormate(event);
 	}
 	
 	

@@ -54,7 +54,7 @@ public class YoutubeUtil {
 				search.setChannelId(channelId);
 				search.setType("video");
 				search.setOrder("date");
-				search.setMaxResults(1L);
+				search.setMaxResults(10L);
 
 				SearchListResponse response = search.execute();
 				List<SearchResult> items = response.getItems();
@@ -64,19 +64,20 @@ public class YoutubeUtil {
 					return;
 				}
 
-				SearchResult result = items.get(0);
-				
-				String videoId = result.getId().getVideoId();
-				String title = result.getSnippet().getTitle();
-				Date uploadAt = new Date(result.getSnippet().getPublishedAt().getValue());
-				Date now = new Date();
-//				System.out.println(now.getTime()-300000+" "+uploadAt.getTime()+" "+ now.getTime());
-				if(uploadAt.getTime()<=now.getTime()&&uploadAt.getTime()>=now.getTime()-300) {
-					String videoUrl = "https://www.youtube.com/watch?v=" + videoId;
-					String msg =  "**"+ result.getSnippet().getChannelTitle()+"** 에 새로운 영상이 올라왔습니다." +System.getProperty("line.separator");
-					msg =msg + title+System.getProperty("line.separator");
-					msg =msg + videoUrl;
-					jda.getGuildById("363657553269489664").getTextChannelById("363657553269489668").sendMessage(msg).queue();
+			
+				for(SearchResult result : items) {
+					String videoId = result.getId().getVideoId();
+					String title = result.getSnippet().getTitle();
+					Date uploadAt = new Date(result.getSnippet().getPublishedAt().getValue());
+					Date now = new Date();
+//					System.out.println(now.getTime()-300000+" "+uploadAt.getTime()+" "+ now.getTime());
+					if(uploadAt.getTime()<=now.getTime()&&uploadAt.getTime()>=now.getTime()-300) {
+						String videoUrl = "https://www.youtube.com/watch?v=" + videoId;
+						String msg =  "**"+ result.getSnippet().getChannelTitle()+"** 에 새로운 영상이 올라왔습니다." +System.getProperty("line.separator");
+						msg =msg + title+System.getProperty("line.separator");
+						msg =msg + videoUrl;
+						jda.getGuildById("363657553269489664").getTextChannelById("363657553269489668").sendMessage(msg).queue();
+					}
 				}
 			}
 		} catch (Exception e) {
