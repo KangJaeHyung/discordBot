@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 
-import loaSSalmuckBot.com.LoaApi.YoutubeUtil;
+import loaSSalmuckBot.com.util.YoutubeUtil;
 
 @EnableCaching
 //@EnableJpaAuditing

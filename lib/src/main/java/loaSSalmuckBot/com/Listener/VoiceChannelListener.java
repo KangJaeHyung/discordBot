@@ -3,6 +3,7 @@ package loaSSalmuckBot.com.Listener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

@@ -8,7 +8,9 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import loaSSalmuckBot.com.LoaApi.LoaRestAPI;
+import loaSSalmuckBot.com.Listener.service.DiscordService;
+import loaSSalmuckBot.com.Listener.service.VoiceService;
+import loaSSalmuckBot.com.util.LoaRestAPI;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
