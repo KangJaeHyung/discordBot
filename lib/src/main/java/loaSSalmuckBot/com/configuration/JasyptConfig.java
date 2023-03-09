@@ -3,16 +3,20 @@ package loaSSalmuckBot.com.configuration;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JasyptConfig {
+	
+	@Value("${jasypt.encrytor.password}")
+	private String key;
 
     @Bean(name = "jasyptPropertiesEncryptor")
     public StringEncryptor stringEncryptor() {
 
-        String key = "fuko";
+        
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(key); // 암호화할 때 사용하는 키

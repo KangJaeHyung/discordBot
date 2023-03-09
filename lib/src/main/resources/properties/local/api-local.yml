@@ -36,20 +36,21 @@ lostark:
     engraving: https://developer-lostark.game.onstove.com/armories/characters/{0}/engraving #각인
     card: https://developer-lostark.game.onstove.com/armories/characters/{0}/cards #카드
     gem: https://developer-lostark.game.onstove.com/armories/characters/{0}/gems #보석
+  apiKey: ENC(v7kFAWwinaSNG3OY6jRKTSt2QcqNQtPouczN0BNgeVDIXHDxhzPZru70cNlijniAUVhjk6+9cSO4osh4hor/I92mocVYR/S82cRvqq+d7W3zZ8MLjoud50I3Ygxl2vTktkPY2jgxaR6qS7GF5swW/vOZrgB64TA4wCsKr8p0p6Qm6r9BQNmlpuP9PihUwLg/MWHXpUgx7SW8w4CUcqHaCEXMG/PIZN+lkwfdsz61QCNehaq5FWvZnRQto9GxWsuQ1DyVNXj0Ea+NPPl/kOKajMZQAZjNriST1h/MIqoD4NrcY8eYLqGBuf07cUXl/98M2LldA71JqDCx11O+XTHms/+pEvacGQAxFr4xMbAf2jJ+oPCjEm+ozy7+TEzlq7kclIzuvPHSuZ1MmR7ufht+wJh8SW0LPd65D+q1JH4h1w+16XpVU9+n/lMXtE4g48N5Zq2DOdi8W5LWN7q97Gqp2BMxXa0D3txcjYXPwYif9wth3ffyitrQmNVAhYfmSqJhxqKfiTm/S8NLUeWGS80eFe9YL/4iSRpIxlU2gq532NZuiCzbB8Yre0KJvOiRVInuCgncIea2UWHl59XwctQA2z9PexHsvelxWrMP7ZMUEQ8ZgYFmwp89tc7YKumggLywVauVjyfo5yrYx37cDKRkosf6BS60ye9fVv+U9pBigaZGACXySXy/xCN/U/cOWn6++u/tmIMGHKusxwM/x2KuTG1wqS1zxCmqxB+um+UcnhN9OKOvi2gIPzhwt41y3zrGzDDiOlfVIsPfzk5HcJluzLbbKiuUJrsdfi3T36poHbxAknlzrgUUlb4ML1CvxEkK95mugxWjV+wE4woB0igMsbgD1PXLGS6y)  
     
 
 
 discord:
-  token_1: ENC(/RDSgqSKPyKM/dIOZaK5A8FoDOXdqO2oymkuTDXTeo0Qjum7aR8VCrllLeSaZ3e9)
-  token_2: ENC(nXZ0ujWv7doFENc4otQENnIdKwdECSt5Kr6FRFnuGl3JYIiTcWCzvGHllHqKDiMK)
+  token_1: ENC(lz8gZ+rTPS0IwcdMggjzhh0El0e0A6ZOzLhASNOMHQ7Xze3zWxYsH0IoouEMTKsZzSpk8oPcgZ5HfHWzDoMO5cNBz2TsVkN8ZoQeVOpGo38=)
+  token_2: ENC(iL+GMQb0eRoxcmWm4gJcGPsn4Cu0J5GQ/zOk8jCQIqQtmu+IMLOdtu/SCUSYCiKBy6g6CLR9L58vv+luwjfxdtXaPlQLwzsNbZWIS3XZsEMUMfUSlxMNaA==)
   
 gpt:
-  url: https://api.openai.com/v1/completions
+  url: https://api.openai.com/v1/chat/completions
   auth: ENC(jUlyq5orvXq8LVFIx6OJyaSv5iwNGFjdVHREYs9m0VEm4rpvC2Bjno1VEsB4m16i1sa4GCpZY6d7MCERWaLXMw==)
   
 google:
-  apiKey: ENC(TYazvq4Fsz2XJKyW+oiv+ueM1zIEC37/zgdqc9kl97IlKjmfJLJ1L2dmZdN9iiu1)
-  channelIds: UCL3gnarNIeI_M0cFxjNYdAA,UCzjp53OM5d3QOB8_D6-teBw,UCfcfymsN3OMo2cfmbpGTanw,UCUHcLZNBLB3IpdBQQb3Cr_Q,UCpHqtGZFWHfDpqEDCS5xY7g,UCpHqtGZFWHfDpqEDCS5xY7g
+  apiKey: ENC(nZMt55wJ/MEDBzGjJPPrhWRudZrvUjYfqEQPh83jYQwvygPNjYxy6P6hdGadGyFA)
+  channelIds: UCL3gnarNIeI_M0cFxjNYdAA,UCfcfymsN3OMo2cfmbpGTanw,UCUHcLZNBLB3IpdBQQb3Cr_Q
 
 jasypt:
   encryptor:

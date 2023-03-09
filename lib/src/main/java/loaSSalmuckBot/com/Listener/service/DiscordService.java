@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
+import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -26,10 +30,53 @@ public class DiscordService {
 	public VoiceChannelRepository voiceChannelRepository;
 
 	@Autowired
+	public UserChatRepository userChatRepository;
+	
+	@Autowired
 	private ResourceLoader resourceLoader;
 	
 	
-
+	public UserChatEntity getBeforeUserChat(String userId) {
+		Optional<UserChatEntity> entityOp=  userChatRepository.findById(userId);
+		return entityOp.isEmpty()?null:entityOp.get();
+	}
+	
+	
+	public void raid(SlashCommandInteractionEvent event) {
+		String raid =event.getOption("raid").getAsString();
+		switch (raid) {
+			case "valtan": {
+				valtan(event);
+				break;
+			}
+			case "biackiss": {
+				biackiss(event);
+				break;
+			}
+			case "kuoku": {
+				kuoku(event);
+				break;
+			}
+			case "abrelshud": {
+				abrelshud(event);
+				break;
+			}
+			case "kayangel": {
+				kayangel(event);
+				break;
+			}
+			case "illiakan": {
+				illiakan(event);
+				break;
+			}
+			case "tower": {
+				illiakan(event);
+				break;
+			}
+		}
+			
+		
+	}
 	
 	public void valtan(SlashCommandInteractionEvent event) {
 		Integer gateway = event.getOption("gateway") == null ? 1 : event.getOption("gateway").getAsInt();
@@ -810,6 +857,17 @@ public class DiscordService {
 
 		}
 
+	}
+
+
+
+
+	public void saveUserChat(String id, String chat, String response) {
+		UserChatEntity entity = new UserChatEntity();
+		entity.setUser_id(id);
+		entity.setRequestChat(chat);
+		entity.setResponseChat(response);
+		userChatRepository.save(entity);
 	}
 
 }

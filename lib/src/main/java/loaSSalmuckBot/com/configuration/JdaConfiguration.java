@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import loaSSalmuckBot.com.Listener.ChattingListener;
-import loaSSalmuckBot.com.Listener.MyApplicationCommand;
+import loaSSalmuckBot.com.Listener.GuildListener;
+import loaSSalmuckBot.com.Listener.CommandListener;
 import loaSSalmuckBot.com.Listener.VoiceChannelListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -33,7 +33,7 @@ public class JdaConfiguration {
 	@Bean
     public JDA jda() {
     	JDA jda = JDABuilder
-				.createLight(discordToken1+"."+discordToken2,
+				.createLight(discordToken1,
 						EnumSet.allOf(GatewayIntent.class))
 				.enableCache(CacheFlag.VOICE_STATE).setMemberCachePolicy(MemberCachePolicy.DEFAULT).build();
 
@@ -42,15 +42,15 @@ public class JdaConfiguration {
     }
     
     @Bean
-    public MyApplicationCommand myApplicationCommand() {
-        return new MyApplicationCommand();
+    public CommandListener myApplicationCommand() {
+        return new CommandListener();
     }
     @Bean
     public VoiceChannelListener voiceChannelListener() {
         return new VoiceChannelListener();
     }
     @Bean
-    public ChattingListener chattingListener() {
-        return new ChattingListener();
+    public GuildListener chattingListener() {
+        return new GuildListener();
     }
 }

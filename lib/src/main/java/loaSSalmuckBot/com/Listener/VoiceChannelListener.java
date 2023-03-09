@@ -1,5 +1,8 @@
 package loaSSalmuckBot.com.Listener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +19,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 @Component
 public class VoiceChannelListener extends ListenerAdapter {
 
+	
+	
+	public static List<String> newChannels= new ArrayList<String>();
 
 	@Autowired
 	private VoiceService voiceService;
@@ -38,7 +44,8 @@ public class VoiceChannelListener extends ListenerAdapter {
 	private void joinEvent(GuildVoiceUpdateEvent event) {
 		AudioChannelUnion channelJoined = event.getChannelJoined();
 		String channelId = channelJoined.getId();
-		VoiceChannelEntity entity= voiceService.findGiven(channelId);
+		VoiceChannelEntity entity= voiceService.findGiven(event.getGuild().getId(),channelId);
+		
 		if(entity!=null) {
 			createChannel(event, entity.getCreateName());
 			return;
@@ -48,9 +55,10 @@ public class VoiceChannelListener extends ListenerAdapter {
 	private void leftEvent(GuildVoiceUpdateEvent event) {
 		AudioChannelUnion channelLeft = event.getChannelLeft();
 		Guild guild = event.getGuild();
-		Category category = event.getGuild().getCategoriesByName("보이스채널", true).get(0);
-		VoiceChannel voiceChannel = guild.getVoiceChannelById(channelLeft.getIdLong());
-		if (voiceChannel.getParentCategory().equals(category) && voiceChannel.getMembers().size() == 0) {
+		VoiceChannel voiceChannel = guild.getVoiceChannelById(channelLeft.getId());
+		
+		if (newChannels.contains(voiceChannel.getId())&&voiceChannel.getMembers().size() == 0) {
+			newChannels.remove(voiceChannel.getId());
 			voiceChannel.delete().queue();
 		}
 	}
@@ -61,10 +69,10 @@ public class VoiceChannelListener extends ListenerAdapter {
 		AudioChannelUnion currentChannel = member.getVoiceState().getChannel();
 
 		if (currentChannel != null) {
-			Category category = event.getGuild().getCategoriesByName("보이스채널", true).get(0);
+			Category category = currentChannel.getParentCategory();
 			VoiceChannel newChannel = category.createVoiceChannel(channelName).complete();
+			newChannels.add(newChannel.getId());
 			guild.moveVoiceMember(member, newChannel).queue();
-
 		}
 
 	}

@@ -15,6 +15,8 @@ public class ArmoryProfile {
 	private String title;
 	private String guildMemberGrade;
 	private String guildName;
+	private Integer usingSkillPoint;
+	private Integer totalSkillPoint;
 	private List<HashMap<String,Object>> stats;
 	private List<HashMap<String,Object>> tendencies;
 	private String serverName;
