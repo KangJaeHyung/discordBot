@@ -29,16 +29,16 @@ public class GuildListener extends ListenerAdapter {
 	
 
 	
-	@Override
-	public void onMessageReceived(MessageReceivedEvent event) {
-		MessageChannelUnion channel = event.getChannel();
-		String msg = event.getMessage().getContentRaw();
-		System.out.println("channelId: "+channel.getIdLong()+", name"+event.getMember().getUser().getName()+", content"+event.getMessage().getContentRaw());
-		
-		String[] msgSplit = msg.split(" ");
-		if(msgSplit[0].equals("!유저생성")) {
-		}
-	}
+//	@Override
+//	public void onMessageReceived(MessageReceivedEvent event) {
+//		MessageChannelUnion channel = event.getChannel();
+//		String msg = event.getMessage().getContentRaw();
+//		System.out.println("channelId: "+channel.getIdLong()+", name"+event.getMember().getUser().getName()+", content"+event.getMessage().getContentRaw());
+//		
+//		String[] msgSplit = msg.split(" ");
+//		if(msgSplit[0].equals("!유저생성")) {
+//		}
+//	}
 	
 
 	@Override

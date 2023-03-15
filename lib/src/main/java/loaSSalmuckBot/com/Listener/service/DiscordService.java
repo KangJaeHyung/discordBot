@@ -3,20 +3,19 @@ package loaSSalmuckBot.com.Listener.service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
+
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
@@ -36,9 +35,10 @@ public class DiscordService {
 	private ResourceLoader resourceLoader;
 	
 	
-	public UserChatEntity getBeforeUserChat(String userId) {
-		Optional<UserChatEntity> entityOp=  userChatRepository.findById(userId);
-		return entityOp.isEmpty()?null:entityOp.get();
+	public List<UserChatEntity> getBeforeUserChat(String userId) {
+		List<UserChatEntity> entityOp=  userChatRepository.findTop10ByUserIdOrderByIdDesc(userId);
+		Collections.reverse(entityOp);
+		return entityOp;
 	}
 	
 	
@@ -864,7 +864,7 @@ public class DiscordService {
 
 	public void saveUserChat(String id, String chat, String response) {
 		UserChatEntity entity = new UserChatEntity();
-		entity.setUser_id(id);
+		entity.setUserId(id);
 		entity.setRequestChat(chat);
 		entity.setResponseChat(response);
 		userChatRepository.save(entity);

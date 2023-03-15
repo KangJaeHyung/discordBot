@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.math3.util.ContinuedFraction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -50,6 +52,10 @@ public class CommandListener extends ListenerAdapter {
 		switch (command) {
 		case "채널설정": {
 			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
 				voiceService.createGivenCreateChannel(event);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -60,6 +66,10 @@ public class CommandListener extends ListenerAdapter {
 		}
 		case "유튜브채널설정": {
 			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
 				voiceService.createGivenYutubeChannel(event);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -70,6 +80,10 @@ public class CommandListener extends ListenerAdapter {
 		}
 		case "신입채널설정": {
 			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
 				voiceService.createGivenWelcomeChannel(event);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -80,6 +94,10 @@ public class CommandListener extends ListenerAdapter {
 		}
 		case "공지채널설정": {
 			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
 				voiceService.createGivenNotiChannel(event);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -89,6 +107,10 @@ public class CommandListener extends ListenerAdapter {
 		}
 		case "채널설정삭제": {
 			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
 				voiceService.deleteGivenCreateChannel(event);
 				event.reply("채널 이동 이벤트가 삭제되었습니다.").queue();
 			} catch (Exception e) {
@@ -136,18 +158,31 @@ public class CommandListener extends ListenerAdapter {
 				dap.thenAccept(response -> {
 					if(response==null) event.getHook().editOriginal("유저 정보를 가져올 수 없습니다. 다시 확인해 주세요.").queue();
 					try {
-						String name = response.getCharacterName()+"/"+response.getCharacterClassName()+"/"+String.format("%.1f",Float.parseFloat(response.getItemMaxLevel().replace(",","")));
+						String name = response.getCharacterName()+"/"+response.getCharacterClassName()+"/"+Math.floor(Float.parseFloat(response.getItemMaxLevel().replace(",","")));
 						if( event.getOption("member")==null) {
 							event.getMember().modifyNickname(name).queue();
+							for(Role role:  event.getMember().getRoles()) {
+								if(role.getName().equals("운영진")||role.getName().equals("부길드장")) continue;
+								event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
+							}
+							event.getGuild().addRoleToMember(event.getMember(),event.getGuild().getRolesByName(response.getCharacterClassName(), true).get(0)).queue();
+							event.getGuild().addRoleToMember(event.getMember(),event.getGuild().getRolesByName("길드원", true).get(0)).queue();
 						}else {
 							Member member =event.getOption("member").getAsMember();
 							member.modifyNickname(name).queue();
+							for(Role role:  member.getRoles()) {
+								if(role.getName().equals("운영진")||role.getName().equals("부길드장")) continue;
+								event.getGuild().removeRoleFromMember(member, role).queue();
+							}
+							event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(response.getCharacterClassName(), true).get(0)).queue();
+							event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
 						}
 						MessageEmbed embed = new EmbedBuilder().setTitle(":scales: **연동 완료**").setColor(new Color(157, 216, 75)).setAuthor(response.getCharacterName())
 								.setImage(response.getCharacterImage())
 								.setFooter("[머쓱해요]").build();
 						
 						event.getHook().editOriginalEmbeds(embed).queue();
+						
 					} catch (Exception e) {
 						event.getHook().editOriginal("닉네임 변경중 문제가 발생하였습니다.").queue();
 						e.printStackTrace();
@@ -160,6 +195,22 @@ public class CommandListener extends ListenerAdapter {
 				break;
 			}	
 			
+		}
+		case "엘릭서": {
+			try {
+				event.reply("잠시만 기다려주세요...").queue();
+				String user = event.getOption("user").getAsString();
+				CompletableFuture<MessageEmbed> dap = api.getElixir(user);
+				dap.thenAccept(response -> {
+					event.getHook().editOriginalEmbeds(response).queue();
+//					discordService.saveUserChat(event.getMember().getId(), chat,response);
+		        });
+				break;
+//				event.editMessage(dap).queue();
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}	
 		}
 //		case "프로필": {
 //			
@@ -219,6 +270,7 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("채널설정삭제", "해당 채널 이벤트를 삭제합니다")
 				.addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("연동", "현재 디스코드 닉네임을 로스트아크api와 연동하여 닉네임을 변경합니다.").addOption(OptionType.STRING, "user", "유저", true).addOption(OptionType.USER, "member", "변경할 유저", false));
+		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 				
 		
 //		data.add(Commands.slash("유저생성","유저 생성합니다.").addOption(OptionType.USER, "user", "유저" , true));
@@ -275,11 +327,7 @@ public class CommandListener extends ListenerAdapter {
 //        SelectMenu menu = StringSelectMenu.create("선택").setPlaceholder("Select an option").addOptions(options).build();
 //        
 //		event.replyEmbeds(embed).addActionRow(menu).queue();
-	}
-	
-	
-	
-	
+	}	
 	
 	
 	@Override
@@ -287,6 +335,18 @@ public class CommandListener extends ListenerAdapter {
 		discordService.choiceFormate(event);
 	}
 	
-	
+	public boolean roleCheck(SlashCommandInteractionEvent event) {
+		
+		List<Role> list =  event.getMember().getRoles();
+		boolean isRole= false;
+		for(Role role:list) {
+			if(role.getId().equals("832801295336341516")||role.getId().equals("832801296645488651")||role.getId().equals("832801297865506826")){
+				isRole=true;
+				break;
+			}
+		}
+		return isRole;
+		
+	}
 	
 }

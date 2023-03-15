@@ -25,4 +25,13 @@ public class ArmoryProfile {
 	private String characterClassName;
 	private String itemAvgLevel;
 	private String itemMaxLevel;
+	
+	private Boolean isCheck;
+	
+	public ArmoryProfile(Boolean isCheck) {
+		this.isCheck =isCheck;
+	}
+	ArmoryProfile(){
+		
+	}
 }

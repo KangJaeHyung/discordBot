@@ -2,15 +2,13 @@ package loaSSalmuckBot.com.api.jpa.userChat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import loaSSalmuckBot.com.Listener.dto.Given;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,8 +19,9 @@ import lombok.EqualsAndHashCode;
 @DynamicUpdate
 public class UserChatEntity {
 
-	@Id
-	@Column(name = "user_id") 					private String user_id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY )
+	@Column(name ="id")							private Long id;
+	@Column(name = "user_id") 					private String userId;
 	@Column(name = "request_chat") 				private String requestChat;
 	@Column(name = "response_chat")				private String responseChat;
 }
