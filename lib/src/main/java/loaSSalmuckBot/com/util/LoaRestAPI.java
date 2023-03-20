@@ -156,7 +156,7 @@ public class LoaRestAPI {
         		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(":scales: **점검중입니다!!**").setAuthor(userName).setColor(new Color(157, 216, 75));
         		return  CompletableFuture.completedFuture(embedBuilder.build());
         	}
-        	
+        	log.info("body {}", equipmentResponse.getBody());
         	List<Equipment> equi = mapper.readValue(equipmentResponse.getBody(),  new TypeReference<List<Equipment>>() {});
         	if(equi==null||equi.size()==0) return CompletableFuture.completedFuture(null);
         	ArmoryProfile profile = mapper.readValue(profilesResponse.getBody(), ArmoryProfile.class);
