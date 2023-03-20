@@ -162,9 +162,9 @@ public class ScheduleUtil {
 				// 4. 요청 URL을 정의해줍니다.
 				String url = "https://developer-lostark.game.onstove.com/armories/characters/" + beforeNick
 						+ "/profiles";
-				UriComponents uri = UriComponentsBuilder.fromHttpUrl(new String(url.getBytes(), "UTF-8")).build(false);
+//				UriComponents uri = UriComponentsBuilder.fromHttpUrl(new String(url.getBytes(), "UTF-8")).build(false);
 				// 5. exchange() 메소드로 api를 호출합니다.
-				ResponseEntity<String> response = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity,
+				ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 						String.class);
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
 				log.info("response : {}", profile);

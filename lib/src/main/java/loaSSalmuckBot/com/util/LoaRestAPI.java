@@ -106,12 +106,12 @@ public class LoaRestAPI {
 
         // 4. 요청 URL을 정의해줍니다.
         String url = "https://developer-lostark.game.onstove.com/armories/characters/"+userName+"/profiles";
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(new String(url.getBytes(),"UTF-8")).build(false);
+//        UriComponents uri = UriComponentsBuilder.fromHttpUrl(new String(url.getBytes(),"UTF-8")).build(false);
 
         // 5. exchange() 메소드로 api를 호출합니다.
         
         try {
-        	ResponseEntity<String> response = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, String.class);
+        	ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         	log.info("response : {}",response);
         	if(!response.getStatusCode().equals(HttpStatus.OK))  	return  CompletableFuture.completedFuture(new ArmoryProfile(true));
         	ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
@@ -145,13 +145,12 @@ public class LoaRestAPI {
         UriComponents equipmentUri = UriComponentsBuilder.fromHttpUrl(new String(equipmentUrl.getBytes(),"UTF-8")).build(false);
         UriComponents profilesUri = UriComponentsBuilder.fromHttpUrl(new String(profilesUrl.getBytes(),"UTF-8")).build(false);
         UriComponents engravingsUri = UriComponentsBuilder.fromHttpUrl(new String(engravingsUrl.getBytes(),"UTF-8")).build(false);
-        log.info(equipmentUrl+"### log {}",equipmentUri);
         // 5. exchange() 메소드로 api를 호출합니다.
         
         try {
-        	ResponseEntity<String>  equipmentResponse = restTemplate.exchange(equipmentUri.toString(), HttpMethod.GET, entity, String.class);
-        	ResponseEntity<String>  profilesResponse = restTemplate.exchange(profilesUri.toString(), HttpMethod.GET, entity, String.class);
-        	ResponseEntity<String>  engravingsResponse = restTemplate.exchange(engravingsUri.toString(), HttpMethod.GET, entity, String.class);
+        	ResponseEntity<String>  equipmentResponse = restTemplate.exchange(equipmentUrl, HttpMethod.GET, entity, String.class);
+        	ResponseEntity<String>  profilesResponse = restTemplate.exchange(profilesUrl.toString(), HttpMethod.GET, entity, String.class);
+        	ResponseEntity<String>  engravingsResponse = restTemplate.exchange(engravingsUrl.toString(), HttpMethod.GET, entity, String.class);
         	if(!equipmentResponse.getStatusCode().equals(HttpStatus.OK))  	{
         		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(":scales: **점검중입니다!!**").setAuthor(userName).setColor(new Color(157, 216, 75));
         		return  CompletableFuture.completedFuture(embedBuilder.build());
