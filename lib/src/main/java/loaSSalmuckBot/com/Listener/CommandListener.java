@@ -156,9 +156,12 @@ public class CommandListener extends ListenerAdapter {
 				String user = event.getOption("user").getAsString();
 				CompletableFuture<ArmoryProfile> dap = api.getLoaUser(user);
 				dap.thenAccept(response -> {
-					if(response==null) event.getHook().editOriginal("유저 정보를 가져올 수 없습니다. 다시 확인해 주세요.").queue();
+					if(response==null) {
+						event.getHook().editOriginal("유저 정보를 가져올 수 없습니다. 다시 확인해 주세요.").queue();
+						return;
+					}
 					try {
-						String name = response.getCharacterName()+"/"+response.getCharacterClassName()+"/"+Math.floor(Float.parseFloat(response.getItemMaxLevel().replace(",","")));
+						String name = response.getCharacterName()+"/"+response.getCharacterClassName()+"/"+ (int)Math.floor(Double.parseDouble(response.getItemMaxLevel().replace(",","")));
 						if( event.getOption("member")==null) {
 							event.getMember().modifyNickname(name).queue();
 							for(Role role:  event.getMember().getRoles()) {
@@ -202,6 +205,10 @@ public class CommandListener extends ListenerAdapter {
 				String user = event.getOption("user").getAsString();
 				CompletableFuture<MessageEmbed> dap = api.getElixir(user);
 				dap.thenAccept(response -> {
+					if(response ==null){
+						event.getHook().editOriginal("검색중 문제가 생겼습니다. 닉네임을 한번 확인해 주세요.").queue();
+						return;
+					}
 					event.getHook().editOriginalEmbeds(response).queue();
 //					discordService.saveUserChat(event.getMember().getId(), chat,response);
 		        });

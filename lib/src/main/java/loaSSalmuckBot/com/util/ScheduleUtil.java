@@ -127,7 +127,7 @@ public class ScheduleUtil {
 	private static final String guildManager = "832801297865506826";
 	private static final String guildMamger = "995938730286264460";
 
-	@Scheduled(cron = "0 0 18 * * *") // 5분(300000ms)마다 실행
+	@Scheduled(cron = "30 32 9 * * *") // 5분(300000ms)마다 실행
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
@@ -149,9 +149,7 @@ public class ScheduleUtil {
 				log.info("refresh member : {}", beforeNick);
 				beforeNick = beforeNick.split("/")[0];
 				// 1. 타임아웃 설정시 HttpComponentsClientHttpRequestFactory 객체를 생성합니다.
-				RestTemplateBuilder builder = new RestTemplateBuilder();
-				RestTemplate restTemplate = builder.setConnectTimeout(Duration.ofSeconds(30))
-						.setReadTimeout(Duration.ofSeconds(30)).build();
+				RestTemplate restTemplate = LoaRestAPI.makeRestTemplate(true);
 				// 2. HTTP 요청 본문 생성
 				Map<String, Object> requestBody = new HashMap<>();
 				// 3. header 설정을 위해 HttpHeader 클래스를 생성한 후 HttpEntity 객체에 넣어줍니다.
@@ -170,16 +168,17 @@ public class ScheduleUtil {
 						String.class);
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
 				log.info("response : {}", profile);
-				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));
-				member.modifyNickname(afterNick).queue();
+				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
 				for(Role role:  member.getRoles()) {
-					if(role.getName().equals("운영진")||role.getName().equals("부길드장")) continue;
+					if(role.getName().equals("운영진")||role.getName().equals("부길드장")||role.getName().equals("길드원")) continue;
 					guild.removeRoleFromMember(member, role).queue();
 				}
+				member.modifyNickname(afterNick).queue();
 				guild.addRoleToMember(member,guild.getRolesByName(profile.getCharacterClassName(), true).get(0)).queue();
 				guild.addRoleToMember(member,guild.getRolesByName("길드원", true).get(0)).queue();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				log.info("member {}" , member.getNickname());
 				e.printStackTrace();
 			}
 		}
