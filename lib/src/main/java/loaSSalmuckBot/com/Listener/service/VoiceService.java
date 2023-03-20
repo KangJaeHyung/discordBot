@@ -29,7 +29,7 @@ public class VoiceService {
 		VoiceChannelEntity entity = new VoiceChannelEntity();
 		VoiceChannel channel=  event.getOption("channel").getAsChannel().asVoiceChannel();
 		String creName = event.getOption("name").getAsString();
-		if(!voiceChannelRepository.findById(new VoiceChannelPk(channel.getGuild().getId(),channel.getId())).isEmpty()) {
+		if(!voiceChannelRepository.findById(new VoiceChannelPk(channel.getGuild().getId(),channel.getId())).isPresent()) {
 			event.reply("이미 채널 생성 및 이동부여 상태가 있습니다. 권한 삭제 후 다시 시도해 주세요.").queue();
 			return;
 		}
@@ -51,7 +51,7 @@ public class VoiceService {
 	public VoiceChannelEntity findGiven(String guildId,String channelId) {
 		Optional<VoiceChannelEntity> entityOp = voiceChannelRepository.findById(new VoiceChannelPk(guildId,channelId));
 		
-		if(entityOp.isEmpty()) return null;
+		if(entityOp.isPresent()) return null;
 		VoiceChannelEntity entity= entityOp.get();
 		if(!entity.getGiven().equals(Given.CRECHAN)) return null;
 		return entity;
@@ -88,7 +88,7 @@ public class VoiceService {
 	
 	public void createGivenNotiChannel(SlashCommandInteractionEvent event) {
 		TextChannel channel=  event.getOption("channel").getAsChannel().asTextChannel();
-		if(!voiceChannelRepository.findByIdAndGiven(channel.getId(),Given.NOTICHAN).isEmpty()) {
+		if(!voiceChannelRepository.findByIdAndGiven(channel.getId(),Given.NOTICHAN).isPresent()) {
 			event.reply("이미 공지 알림 이벤트가 부여가 되어 있습니다. 권한 삭제 후 다시 시도해 주세요.").queue();
 			return;
 		}
@@ -98,7 +98,7 @@ public class VoiceService {
 	
 	public void createGivenWelcomeChannel(SlashCommandInteractionEvent event) {
 		TextChannel channel=  event.getOption("channel").getAsChannel().asTextChannel();
-		if(!voiceChannelRepository.findByIdAndGiven(channel.getId(),Given.WELCOMECHAN).isEmpty()
+		if(!voiceChannelRepository.findByIdAndGiven(channel.getId(),Given.WELCOMECHAN).isPresent()
 				||voiceChannelRepository.countByGiven(Given.WELCOMECHAN)>0) {
 			event.reply("이미 신입 환영 알림 이벤트가 부여가 되어 있습니다. 권한 삭제 후 다시 시도해 주세요.").queue();
 			return;

@@ -94,9 +94,7 @@ public class LoaRestAPI {
 	@Async
 	public CompletableFuture<ArmoryProfile> getLoaUser (String userName) throws Exception {
 		// 1. 타임아웃 설정시 HttpComponentsClientHttpRequestFactory 객체를 생성합니다.
-
 	    RestTemplate restTemplate = makeRestTemplate(true);
-
 	    // 2. HTTP 요청 본문 생성
 	    Map<String, Object> requestBody = new HashMap<>();
 

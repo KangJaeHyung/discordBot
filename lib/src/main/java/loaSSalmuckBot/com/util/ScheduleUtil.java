@@ -94,7 +94,7 @@ public class ScheduleUtil {
 				SearchListResponse response = search.execute();
 				List<SearchResult> items = response.getItems();
 
-				if (items.isEmpty()) {
+				if (items.size()==0) {
 					log.info("No new videos found.");
 					return;
 				}
