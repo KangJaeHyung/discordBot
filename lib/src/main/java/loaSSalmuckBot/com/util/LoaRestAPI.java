@@ -145,7 +145,7 @@ public class LoaRestAPI {
         UriComponents equipmentUri = UriComponentsBuilder.fromHttpUrl(new String(equipmentUrl.getBytes(),"UTF-8")).build(false);
         UriComponents profilesUri = UriComponentsBuilder.fromHttpUrl(new String(profilesUrl.getBytes(),"UTF-8")).build(false);
         UriComponents engravingsUri = UriComponentsBuilder.fromHttpUrl(new String(engravingsUrl.getBytes(),"UTF-8")).build(false);
-
+        log.info(equipmentUrl+"### log {}",equipmentUri);
         // 5. exchange() 메소드로 api를 호출합니다.
         
         try {
