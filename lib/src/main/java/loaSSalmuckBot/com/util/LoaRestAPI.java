@@ -142,9 +142,9 @@ public class LoaRestAPI {
         String equipmentUrl = "https://developer-lostark.game.onstove.com/armories/characters/"+userName+"/equipment";
         String profilesUrl = "https://developer-lostark.game.onstove.com/armories/characters/"+userName+"/profiles";
         String engravingsUrl = "https://developer-lostark.game.onstove.com/armories/characters/"+userName+"/engravings";
-        UriComponents equipmentUri = UriComponentsBuilder.fromHttpUrl(new String(equipmentUrl.getBytes(),"UTF-8")).build(false);
-        UriComponents profilesUri = UriComponentsBuilder.fromHttpUrl(new String(profilesUrl.getBytes(),"UTF-8")).build(false);
-        UriComponents engravingsUri = UriComponentsBuilder.fromHttpUrl(new String(engravingsUrl.getBytes(),"UTF-8")).build(false);
+//        UriComponents equipmentUri = UriComponentsBuilder.fromHttpUrl(new String(equipmentUrl.getBytes(),"UTF-8")).build(false);
+//        UriComponents profilesUri = UriComponentsBuilder.fromHttpUrl(new String(profilesUrl.getBytes(),"UTF-8")).build(false);
+//        UriComponents engravingsUri = UriComponentsBuilder.fromHttpUrl(new String(engravingsUrl.getBytes(),"UTF-8")).build(false);
         // 5. exchange() 메소드로 api를 호출합니다.
         
         try {
@@ -155,7 +155,7 @@ public class LoaRestAPI {
         		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(":scales: **점검중입니다!!**").setAuthor(userName).setColor(new Color(157, 216, 75));
         		return  CompletableFuture.completedFuture(embedBuilder.build());
         	}
-        	log.info(""+equipmentResponse.getStatusCode()+"######  "+equipmentResponse.toString());
+//        	log.info(""+equipmentResponse.getStatusCode()+"######  "+equipmentResponse.toString());
         	List<Equipment> equi = mapper.readValue(equipmentResponse.getBody(),  new TypeReference<List<Equipment>>() {});
         	if(equi==null||equi.size()==0) return CompletableFuture.completedFuture(null);
         	ArmoryProfile profile = mapper.readValue(profilesResponse.getBody(), ArmoryProfile.class);
@@ -229,8 +229,8 @@ public class LoaRestAPI {
 		Double cri= criLevel==0?0:criDamage[criLevel-1];
 		Double top= topLevel==0?0:topDamge[topLevel-1];
 		
-		System.out.println(boss + ","+glove + ","+add + ","+cri + ","+top+setTop+setglove);
-		System.out.println(nowCharaterAttackPoint);
+//		System.out.println(boss + ","+glove + ","+add + ","+cri + ","+top+setTop+setglove);
+//		System.out.println(nowCharaterAttackPoint);
 		Double elixirtTotalDamage = nowCharaterAttackPoint*(1+boss)*(1+glove)*(1.25+add)*(0.4+0.6*(2.5+cri))/*(2.5+cri)/2*1.6*/;
 	
 		if(allLevel>=35&&setglove.equals(setTop)) {
