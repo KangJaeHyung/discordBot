@@ -16,6 +16,6 @@ spring:
         
 services:
   username: discord
-  passwd: ENC(otAyCVaUq2oJi8rHULhlIQ==)
+  passwd: ENC(/HB2X/jxbQRhr2A5d4/Yfg==)
   url: jdbc:mysql://localhost:3306/odd
   
