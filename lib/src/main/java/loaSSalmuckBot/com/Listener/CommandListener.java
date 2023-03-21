@@ -202,7 +202,7 @@ public class CommandListener extends ListenerAdapter {
 								.setImage(response.getCharacterImage())
 								.setFooter("[머쓱해요]").build();
 						
-						event.getHook().editOriginalEmbeds(embed).queue();
+						event.getHook().editOriginalEmbeds(embed).setContent("").queue();
 						
 					} catch (Exception e) {
 						event.getHook().editOriginal("닉네임 변경중 문제가 발생하였습니다.").queue();
@@ -227,7 +227,7 @@ public class CommandListener extends ListenerAdapter {
 						event.getHook().editOriginal("검색중 문제가 생겼습니다. 닉네임을 한번 확인해 주세요.").queue();
 						return;
 					}
-					event.getHook().editOriginalEmbeds(response).queue();
+					event.getHook().editOriginalEmbeds(response).setContent("").queue();
 //					discordService.saveUserChat(event.getMember().getId(), chat,response);
 		        });
 				break;
