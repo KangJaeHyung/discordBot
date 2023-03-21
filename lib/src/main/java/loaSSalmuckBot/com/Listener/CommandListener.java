@@ -92,19 +92,19 @@ public class CommandListener extends ListenerAdapter {
 			
 			break;
 		}
-		case "공지채널설정": {
-			try {
-				if(!roleCheck(event)) {
-					event.reply("권한이 없습니다.").queue();
-					return;
-				}
-				voiceService.createGivenNotiChannel(event);
-			} catch (Exception e) {
-				e.printStackTrace();
-				event.reply("공지 이벤트 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
-			}
-			break;
-		}
+//		case "공지채널설정": {
+//			try {
+//				if(!roleCheck(event)) {
+//					event.reply("권한이 없습니다.").queue();
+//					return;
+//				}
+//				voiceService.createGivenNotiChannel(event);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				event.reply("공지 이벤트 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
+//			}
+//			break;
+//		}
 		case "채널설정삭제": {
 			try {
 				if(!roleCheck(event)) {
@@ -165,7 +165,16 @@ public class CommandListener extends ListenerAdapter {
 						if( event.getOption("member")==null) {
 							event.getMember().modifyNickname(name).queue();
 							for(Role role:  event.getMember().getRoles()) {
-								if(role.getName().equals("운영진")||role.getName().equals("부길드장")) continue;
+								if(role.getName().equals("운영진")||
+										role.getName().equals("부길드장")||
+										role.getName().equals("길드원")||
+										role.getName().equals("서버 부스터")||
+										role.getName().equals("모험섬")||
+										role.getName().equals("섬령전")||
+										role.getName().equals("필드 보스")||
+										role.getName().equals("유령선")||
+										role.getName().equals("로웬 습격")
+										) continue;
 								event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
 							}
 							event.getGuild().addRoleToMember(event.getMember(),event.getGuild().getRolesByName(response.getCharacterClassName(), true).get(0)).queue();
@@ -174,7 +183,16 @@ public class CommandListener extends ListenerAdapter {
 							Member member =event.getOption("member").getAsMember();
 							member.modifyNickname(name).queue();
 							for(Role role:  member.getRoles()) {
-								if(role.getName().equals("운영진")||role.getName().equals("부길드장")) continue;
+								if(role.getName().equals("운영진")||
+										role.getName().equals("부길드장")||
+										role.getName().equals("길드원")||
+										role.getName().equals("서버 부스터")||
+										role.getName().equals("모험섬")||
+										role.getName().equals("섬령전")||
+										role.getName().equals("필드 보스")||
+										role.getName().equals("유령선")||
+										role.getName().equals("로웬 습격")
+										) continue;
 								event.getGuild().removeRoleFromMember(member, role).queue();
 							}
 							event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(response.getCharacterClassName(), true).get(0)).queue();
@@ -267,7 +285,7 @@ public class CommandListener extends ListenerAdapter {
 				.addChoice("상아탑", "tower")
 				));
 		data.add(Commands.slash("대화", "AI와 대화를 할 수 있습니다.").addOption(OptionType.STRING, "chat", "채팅", true));
-		data.add(Commands.slash("공지채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
+//		data.add(Commands.slash("공지채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("신입채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("유튜브채널설정", "유튜브 알람 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("채널설정", "음성 채널 생성 및 이동 이벤트를 부여합니다.")
