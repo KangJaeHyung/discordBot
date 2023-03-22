@@ -14,6 +14,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -127,7 +128,7 @@ public class ScheduleUtil {
 	private static final String guildManager = "832801297865506826";
 	private static final String guildMamger = "995938730286264460";
 
-	@Scheduled(cron = "30 32 9 * * *") // 5분(300000ms)마다 실행
+	@Scheduled(cron = "0 0 0 * * *") // 5분(300000ms)마다 실행
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
@@ -166,6 +167,7 @@ public class ScheduleUtil {
 				// 5. exchange() 메소드로 api를 호출합니다.
 				ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity,
 						String.class);
+				if(!response.getStatusCode().equals(HttpStatus.OK)) return;
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
 				log.info("response : {}", profile);
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	

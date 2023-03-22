@@ -30,4 +30,5 @@ public class VoiceChannelEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "given")						private Given given;
 	@Column(name = "creat_name") 				private String createName;
+	@Column(name = "person")					private Integer person;
 }

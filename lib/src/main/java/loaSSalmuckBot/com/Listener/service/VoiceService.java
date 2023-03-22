@@ -29,6 +29,7 @@ public class VoiceService {
 		VoiceChannelEntity entity = new VoiceChannelEntity();
 		VoiceChannel channel=  event.getOption("channel").getAsChannel().asVoiceChannel();
 		String creName = event.getOption("name").getAsString();
+		Integer person = event.getOption("person")==null?null:event.getOption("person").getAsInt();
 		if(voiceChannelRepository.findById(new VoiceChannelPk(channel.getGuild().getId(),channel.getId())).isPresent()) {
 			event.reply("이미 채널 생성 및 이동부여 상태가 있습니다. 권한 삭제 후 다시 시도해 주세요.").queue();
 			return;
@@ -38,6 +39,8 @@ public class VoiceService {
 		entity.setGiven(Given.CRECHAN);
 		entity.setName(channel.getName());
 		entity.setCreateName(creName);
+		entity.setPerson(person);
+		
 		voiceChannelRepository.save(entity);
 		event.reply("**"+channel.getName()+"** 채널 이동 이벤트 생성이 완료 되었습니다.").queue();
 	}

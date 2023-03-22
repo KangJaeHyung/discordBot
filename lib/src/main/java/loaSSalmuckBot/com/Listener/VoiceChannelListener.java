@@ -47,7 +47,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 		VoiceChannelEntity entity= voiceService.findGiven(event.getGuild().getId(),channelId);
 		
 		if(entity!=null) {
-			createChannel(event, entity.getCreateName());
+			createChannel(event, entity.getCreateName(),entity.getPerson());
 			return;
 		}
 	}
@@ -62,15 +62,17 @@ public class VoiceChannelListener extends ListenerAdapter {
 			voiceChannel.delete().queue();
 		}
 	}
+	
+	
 
-	private void createChannel(GuildVoiceUpdateEvent event, String channelName) {
+	private void createChannel(GuildVoiceUpdateEvent event, String channelName,Integer person) {
 		Guild guild = event.getGuild();
 		Member member = event.getMember();
 		AudioChannelUnion currentChannel = member.getVoiceState().getChannel();
 
 		if (currentChannel != null) {
 			Category category = currentChannel.getParentCategory();
-			VoiceChannel newChannel = category.createVoiceChannel(channelName).complete();
+			VoiceChannel newChannel = category.createVoiceChannel(channelName).setUserlimit(person).complete();
 			newChannels.add(newChannel.getId());
 			guild.moveVoiceMember(member, newChannel).queue();
 		}

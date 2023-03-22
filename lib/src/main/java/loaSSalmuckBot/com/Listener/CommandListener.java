@@ -290,7 +290,8 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("유튜브채널설정", "유튜브 알람 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("채널설정", "음성 채널 생성 및 이동 이벤트를 부여합니다.")
 				.addOption(OptionType.CHANNEL, "channel", "채널이름", true)
-				.addOption(OptionType.STRING, "name", "생성될 채널이름", true));
+				.addOption(OptionType.STRING, "name", "생성될 채널이름", true)
+				.addOption(OptionType.INTEGER, "person", "최대 인원", false));
 		data.add(Commands.slash("채널확인", "이벤트가 걸려있는 체널 목록을 보여줍니다."));		
 		data.add(Commands.slash("채널설정삭제", "해당 채널 이벤트를 삭제합니다")
 				.addOption(OptionType.CHANNEL, "channel", "채널이름", true));
@@ -365,7 +366,7 @@ public class CommandListener extends ListenerAdapter {
 		List<Role> list =  event.getMember().getRoles();
 		boolean isRole= false;
 		for(Role role:list) {
-			if(role.getId().equals("832801295336341516")||role.getId().equals("832801296645488651")||role.getId().equals("832801297865506826")){
+			if(role.getId().equals("832801295336341516")||role.getId().equals("832801296645488651")||role.getId().equals("832801297865506826")||role.getId().equals("1082520090009927741")){
 				isRole=true;
 				break;
 			}
