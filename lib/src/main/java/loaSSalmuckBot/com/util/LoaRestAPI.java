@@ -201,6 +201,12 @@ public class LoaRestAPI {
 			String setglove,
 			String setTop) {
 		
+		Double boss= bossLevel==0?0:bossDamage[bossLevel-1];
+		Double glove= gloveLevel==0?0:gloveDamage[gloveLevel-1];
+		Double add= addLevel==0?0:addDamage[addLevel-1];
+		Double cri= criLevel==0?0:criDamage[criLevel-1];
+		Double top= topLevel==0?0:topDamge[topLevel-1];
+		
 		Double engravingsAttack = this.engravingSetting(engravings)/100;//각인 공증
 		//기본 공격력 = (스탯*무공/6)^(1/2)
 		Double nowCharaterAttackPoint = Double.parseDouble(profile.getStats().get(7).get("Value").toString());//스탯 총 공격력 
@@ -212,22 +218,19 @@ public class LoaRestAPI {
 			weaponLevel = 25+Integer.parseInt(equi.get(0).getName().split(" ")[0].replace("+",""));
 		}
 		
-		Integer weaponeDamge= weaponDamgeList[weaponLevel-1];//무공
+		Integer weaponeDamge= weaponDamgeList[weaponLevel];//무공
 		log.info("weaponeDamge {}",weaponeDamge );
-		
-		Double nowCharaterStat = Math.pow(nowCharaterAttackPoint/engravingsAttack,2)*6/(weaponeDamge+weaponAttackPoint);// 엘릭서 힘지민+힘지민 
+		//69976
+		Double nowCharaterStat = Math.pow((nowCharaterAttackPoint-attackPoint)/(engravingsAttack+top),2)*6/(weaponeDamge+weaponAttackPoint);// 엘릭서 힘지민+힘지민 
 		log.info("nowCharaterStat {}",nowCharaterStat );
+		log.info("noElixirCharaterStat {}",(nowCharaterStat/1.08-statusPoint)*1.08 );
 		log.info("statusPoint {}",statusPoint );
-		Double noElixirAttackPoint  = Math.sqrt((nowCharaterStat-statusPoint)*weaponeDamge/6); // 엘릭서 적용 전 공격력
+		Double noElixirAttackPoint  = Math.sqrt((nowCharaterStat/1.08-statusPoint)*1.08*weaponeDamge/6); // 엘릭서 적용 전 공격력
 		log.info("noElixirAttackPoint {}",noElixirAttackPoint );
 		log.info("engravingsAttack {}",engravingsAttack );
 		Double noElixirtTotaldamage = noElixirAttackPoint*(0.4+0.6*2.5)*engravingsAttack*1.25;
 		
-		Double boss= bossLevel==0?0:bossDamage[bossLevel-1];
-		Double glove= gloveLevel==0?0:gloveDamage[gloveLevel-1];
-		Double add= addLevel==0?0:addDamage[addLevel-1];
-		Double cri= criLevel==0?0:criDamage[criLevel-1];
-		Double top= topLevel==0?0:topDamge[topLevel-1];
+	
 		
 //		System.out.println(boss + ","+glove + ","+add + ","+cri + ","+top+setTop+setglove);
 //		System.out.println(nowCharaterAttackPoint);
