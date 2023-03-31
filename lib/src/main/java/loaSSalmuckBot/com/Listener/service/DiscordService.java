@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
-
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import loaSSalmuckBot.com.api.jpa.userBan.UserBanEntity;
+import loaSSalmuckBot.com.api.jpa.userBan.UserBanRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
@@ -32,6 +35,9 @@ public class DiscordService {
 	public UserChatRepository userChatRepository;
 	
 	@Autowired
+	public UserBanRepository userBanRepository;
+	
+	@Autowired
 	private ResourceLoader resourceLoader;
 	
 	
@@ -39,6 +45,15 @@ public class DiscordService {
 		List<UserChatEntity> entityOp=  userChatRepository.findTop10ByUserIdOrderByIdDesc(userId);
 		Collections.reverse(entityOp);
 		return entityOp;
+	}
+	
+	public void userBan(Guild guild ,String id,String reason) {
+		UserBanEntity banEntity = new UserBanEntity();
+		banEntity.setUserId(id);
+		banEntity.setGuildId(guild.getId());
+		banEntity.setBan_reason(reason);
+		banEntity.setBanYmdt(new Date());
+		userBanRepository.save(banEntity);
 	}
 	
 	

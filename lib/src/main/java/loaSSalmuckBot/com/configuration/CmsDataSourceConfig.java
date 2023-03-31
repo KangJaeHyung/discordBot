@@ -34,10 +34,15 @@ public class CmsDataSourceConfig {
 
     @Value("${services.username}")
     private String username;
-    @Value("${services.passwd}")
-    private String passwd;
+    @Value("${services.passwd_1}")
+    private String passwd_1;
+    @Value("${services.passwd_2}")
+    private String passwd_2;
     @Value("${services.url}")
     private String url;
+    
+	 @Value("${isServer}")
+	 private Boolean isServer;
 	
     @Autowired
     private JpaProperties jpaProperties;
@@ -49,7 +54,7 @@ public class CmsDataSourceConfig {
     @Bean(name = "cmsDataSource")
     @ConfigurationProperties(prefix = "service")
     public DataSource dataSource() {
-        return createHikariDataSource.createDataSource(url, username, passwd, serviceName);
+        return createHikariDataSource.createDataSource(url, username, isServer?passwd_1:passwd_2, serviceName);
     }
 
 

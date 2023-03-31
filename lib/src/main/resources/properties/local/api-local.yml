@@ -42,7 +42,7 @@ lostark:
 
 discord:
   token_1: ENC(lz8gZ+rTPS0IwcdMggjzhh0El0e0A6ZOzLhASNOMHQ7Xze3zWxYsH0IoouEMTKsZzSpk8oPcgZ5HfHWzDoMO5cNBz2TsVkN8ZoQeVOpGo38=)
-  token_2: ENC(iL+GMQb0eRoxcmWm4gJcGPsn4Cu0J5GQ/zOk8jCQIqQtmu+IMLOdtu/SCUSYCiKBy6g6CLR9L58vv+luwjfxdtXaPlQLwzsNbZWIS3XZsEMUMfUSlxMNaA==)
+  token_2: ENC(kijL9QslkL2g5T1CdlmJB5/AtqtRtj/tMjuo3M0vUPGn0OxLjfTbDfehQ+hT3cFZNw2+WsUgDLZwr7ucU3l+tb9cy68KveygTlqTVzyWROWpJocKfo7utg==)
   
 gpt:
   url: https://api.openai.com/v1/chat/completions

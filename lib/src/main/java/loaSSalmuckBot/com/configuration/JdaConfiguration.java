@@ -26,11 +26,14 @@ public class JdaConfiguration {
 	 
 	 @Value("${discord.token_2}")
 	 private String discordToken2;
+	 
+	 @Value("${isServer}")
+	 private Boolean isServer;
 
 	@Bean
     public JDA jda() {
     	JDA jda = JDABuilder
-				.createLight(discordToken1,
+				.createLight(isServer?discordToken1:discordToken2,
 						EnumSet.allOf(GatewayIntent.class))
 //				.setMemberCachePolicy(MemberCachePolicy.ALL)
 				.enableCache(CacheFlag.VOICE_STATE).setMemberCachePolicy(MemberCachePolicy.DEFAULT).build();

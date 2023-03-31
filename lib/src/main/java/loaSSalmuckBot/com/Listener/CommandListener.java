@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.math3.util.ContinuedFraction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.Listener.service.DiscordService;
 import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
+import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
+import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelPk;
 import loaSSalmuckBot.com.util.LoaRestAPI;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -19,7 +21,6 @@ import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
@@ -43,12 +44,43 @@ public class CommandListener extends ListenerAdapter {
 
 	@Autowired
 	private LoaRestAPI api;
+	
+	
 
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
 		String command = event.getName();
+		String guildId = event.getGuild().getId();
+		String channelId = event.getChannel().getId();
+		List<VoiceChannelEntity> entitys = new ArrayList<>();
+		
+		VoiceService.channel.forEach((key,entity) -> {
+			if(entity.getGiven().equals(Given.BOTCHAN)) entitys.add(entity);
+			
+		});
+		
+		if (entitys.size() == 0) {
+			if(!command.equals("봇채널설정")) {
+				event.reply("봇 채널이 아닙니다! 봇 채널을 설정 해주세요!").setEphemeral(true).queue();
+				return;
+			}
+			
+		} else {
+			boolean isBotChan = false;
+			String text = "봇 채널이 아닙니다! 봇 채널을 이용해 주세요.";
+			for (VoiceChannelEntity entity : entitys) {
+				if(entity.getId().equals(channelId)) isBotChan= true;
+				text = text + "\r\n" + event.getGuild().getGuildChannelById(entity.getId()).getJumpUrl();
+			}
+			if(!isBotChan) {
+				event.reply(text).setEphemeral(true).queue();
+				return;
+			}
+		}
+		
 
+		
 		switch (command) {
 		case "채널설정": {
 			try {
@@ -88,6 +120,20 @@ public class CommandListener extends ListenerAdapter {
 			} catch (Exception e) {
 				e.printStackTrace();
 				event.reply("신입 환영 채널 이벤트 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
+			}
+			
+			break;
+		}
+		case "봇채널설정": {
+			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
+				voiceService.createBotChannel(event);
+			} catch (Exception e) {
+				e.printStackTrace();
+				event.reply("봇 채널 이벤트 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
 			}
 			
 			break;
@@ -288,6 +334,7 @@ public class CommandListener extends ListenerAdapter {
 //		data.add(Commands.slash("공지채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("신입채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("유튜브채널설정", "유튜브 알람 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
+		data.add(Commands.slash("봇채널설정", "봇 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("채널설정", "음성 채널 생성 및 이동 이벤트를 부여합니다.")
 				.addOption(OptionType.CHANNEL, "channel", "채널이름", true)
 				.addOption(OptionType.STRING, "name", "생성될 채널이름", true)
