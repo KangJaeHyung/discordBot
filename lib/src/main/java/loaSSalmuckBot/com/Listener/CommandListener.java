@@ -71,7 +71,7 @@ public class CommandListener extends ListenerAdapter {
 			String text = "봇 채널이 아닙니다! 봇 채널을 이용해 주세요.";
 			for (VoiceChannelEntity entity : entitys) {
 				if(entity.getId().equals(channelId)) isBotChan= true;
-				text = text + "\r\n" + event.getGuild().getGuildChannelById(entity.getId()).getJumpUrl();
+				text = text + "\r\n" + event.getGuild().getGuildChannelById(entity.getId()).getAsMention();
 			}
 			if(!isBotChan) {
 				event.reply(text).setEphemeral(true).queue();
