@@ -155,7 +155,7 @@ public class VoiceService {
 	}
 
 	public VoiceChannelEntity getChannelByGiven(Given given) {
-		VoiceChannelEntity entity = VoiceService.channel.get(given.name());
+		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(given);
 		return entity;
 	}
 

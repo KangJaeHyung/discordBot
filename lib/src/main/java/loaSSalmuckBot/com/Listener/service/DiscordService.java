@@ -18,7 +18,6 @@ import loaSSalmuckBot.com.api.jpa.userBan.UserBanRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
