@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
@@ -19,13 +21,15 @@ import lombok.EqualsAndHashCode;
 @Entity(name= "voiceChannel")
 @Table(name = "voice_channel")
 @DynamicUpdate
-@IdClass(VoiceChannelPk.class)
 public class VoiceChannelEntity {
 
-	@Id
+	
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY )
+	@Column(name = "id") 						private Long id;
+	
 	@Column(name = "guild_id") 					private String guildId;
-	@Id
-	@Column(name = "id") 						private String id;
+	
+	@Column(name = "channel_id") 				private String channelId;
 	@Column(name = "name") 						private String name;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "given")						private Given given;

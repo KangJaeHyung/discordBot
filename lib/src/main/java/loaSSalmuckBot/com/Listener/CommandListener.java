@@ -13,7 +13,6 @@ import loaSSalmuckBot.com.Listener.service.DiscordService;
 import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
-import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelPk;
 import loaSSalmuckBot.com.util.LoaRestAPI;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -55,7 +54,7 @@ public class CommandListener extends ListenerAdapter {
 		String channelId = event.getChannel().getId();
 		List<VoiceChannelEntity> entitys = new ArrayList<>();
 		
-		VoiceService.channel.forEach((key,entity) -> {
+		VoiceService.channel.forEach(entity -> {
 			if(entity.getGiven().equals(Given.BOTCHAN)) entitys.add(entity);
 			
 		});
@@ -70,8 +69,8 @@ public class CommandListener extends ListenerAdapter {
 			boolean isBotChan = false;
 			String text = "봇 채널이 아닙니다! 봇 채널을 이용해 주세요.";
 			for (VoiceChannelEntity entity : entitys) {
-				if(entity.getId().equals(channelId)) isBotChan= true;
-				text = text + "\r\n" + event.getGuild().getGuildChannelById(entity.getId()).getAsMention();
+				if(entity.getChannelId().equals(channelId)) isBotChan= true;
+				text = text + "\r\n" + event.getGuild().getGuildChannelById(entity.getChannelId()).getAsMention();
 			}
 			if(!isBotChan) {
 				event.reply(text).setEphemeral(true).queue();
