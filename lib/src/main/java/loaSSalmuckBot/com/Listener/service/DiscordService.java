@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import loaSSalmuckBot.com.api.jpa.userBan.UserBanEntity;
@@ -26,6 +27,7 @@ import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 @Service
+@Transactional
 public class DiscordService {
 	@Autowired
 	public VoiceChannelRepository voiceChannelRepository;

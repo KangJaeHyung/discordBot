@@ -1,7 +1,6 @@
 package loaSSalmuckBot.com.Listener.service;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +8,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 @Service
 @Slf4j
+@Transactional
 public class VoiceService {
 
 	@Autowired
