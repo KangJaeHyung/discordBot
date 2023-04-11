@@ -262,6 +262,21 @@ public class CommandListener extends ListenerAdapter {
 			}	
 			
 		}
+		case "게스트": {
+			if(!roleCheck(event)) {
+				event.reply("권한이 없습니다.").queue();
+				return;
+			}
+			Member member =event.getOption("member").getAsMember();
+			for(Role role:  member.getRoles()) {
+				event.getGuild().removeRoleFromMember(member, role).queue();
+			}
+			member.modifyNickname("(Guest)"+member.getUser().getName()).queue();
+			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("게스트", true).get(0)).queue();
+			event.reply("게스트 설정이 완료되었습니다.").queue();
+			break;
+			
+		}
 		case "엘릭서": {
 			try {
 				event.reply("잠시만 기다려주세요...").queue();
@@ -342,6 +357,7 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("채널설정삭제", "해당 채널 이벤트를 삭제합니다")
 				.addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("연동", "현재 디스코드 닉네임을 로스트아크api와 연동하여 닉네임을 변경합니다.").addOption(OptionType.STRING, "user", "유저", true).addOption(OptionType.USER, "member", "변경할 유저", false));
+		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
 		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 				
 		
