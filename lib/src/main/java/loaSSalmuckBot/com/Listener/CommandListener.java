@@ -307,13 +307,14 @@ public class CommandListener extends ListenerAdapter {
 			}
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
-			event.getHook().editOriginalEmbeds(event.getMessage().getEmbeds().get(0))
-            .setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
+			
+			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
+			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
             .queue();
 			 event.reply("변경 되었습니다.").queue();
 		}else if(event.getComponentId().equals("rejectIntegration")){
-			event.getHook().editOriginalEmbeds(event.getMessage().getEmbeds().get(0))
-            .setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
+			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
+			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
             .queue();
 			 event.reply("반려 되었습니다.").queue();
 		}
