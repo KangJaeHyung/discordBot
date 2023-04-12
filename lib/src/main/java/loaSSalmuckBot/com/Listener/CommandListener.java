@@ -25,12 +25,16 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.CacheRestAction;
 
 @Component
 public class CommandListener extends ListenerAdapter {
@@ -207,47 +211,16 @@ public class CommandListener extends ListenerAdapter {
 					}
 					try {
 						String name = response.getCharacterName()+"/"+response.getCharacterClassName()+"/"+ (int)Math.floor(Double.parseDouble(response.getItemMaxLevel().replace(",","")));
-						if( event.getOption("member")==null) {
-							event.getMember().modifyNickname(name).queue();
-							for(Role role:  event.getMember().getRoles()) {
-								if(role.getName().equals("운영진")||
-										role.getName().equals("부길드장")||
-										role.getName().equals("길드원")||
-										role.getName().equals("서버 부스터")||
-										role.getName().equals("모험섬")||
-										role.getName().equals("섬령전")||
-										role.getName().equals("필드 보스")||
-										role.getName().equals("유령선")||
-										role.getName().equals("로웬 습격")
-										) continue;
-								event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
-							}
-							event.getGuild().addRoleToMember(event.getMember(),event.getGuild().getRolesByName(response.getCharacterClassName(), true).get(0)).queue();
-							event.getGuild().addRoleToMember(event.getMember(),event.getGuild().getRolesByName("길드원", true).get(0)).queue();
-						}else {
-							Member member =event.getOption("member").getAsMember();
-							member.modifyNickname(name).queue();
-							for(Role role:  member.getRoles()) {
-								if(role.getName().equals("운영진")||
-										role.getName().equals("부길드장")||
-										role.getName().equals("길드원")||
-										role.getName().equals("서버 부스터")||
-										role.getName().equals("모험섬")||
-										role.getName().equals("섬령전")||
-										role.getName().equals("필드 보스")||
-										role.getName().equals("유령선")||
-										role.getName().equals("로웬 습격")
-										) continue;
-								event.getGuild().removeRoleFromMember(member, role).queue();
-							}
-							event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(response.getCharacterClassName(), true).get(0)).queue();
-							event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
-						}
-						MessageEmbed embed = new EmbedBuilder().setTitle(":scales: **연동 완료**").setColor(new Color(157, 216, 75)).setAuthor(response.getCharacterName())
+						String memberId =event.getOption("member")==null?event.getMember().getId():event.getOption("member").getAsMember().getId();
+						String userClass =response.getCharacterClassName();
+						MessageEmbed embed = new EmbedBuilder().setTitle(":scales: **연동 완료**").setAuthor(response.getCharacterName()).setColor(new Color(157, 216, 75))
+								.addField("Nickname",name,true)
+								.addField("Member", memberId, true)
+								.addField("Class", userClass,true)
 								.setImage(response.getCharacterImage())
-								.setFooter("[머쓱해요]").build();
+								.setFooter("승인 합니까?").build();
 						
-						event.getHook().editOriginalEmbeds(embed).setContent("").queue();
+						event.getHook().editOriginalEmbeds(embed).setContent("").setActionRow(Button.success("approveIntegration", "승인"), Button.danger("rejectIntegration", "반려")).queue();
 						
 					} catch (Exception e) {
 						event.getHook().editOriginal("닉네임 변경중 문제가 발생하였습니다.").queue();
@@ -304,7 +277,48 @@ public class CommandListener extends ListenerAdapter {
 
 	}
 	
-	
+
+	@Override
+	public void onButtonInteraction(ButtonInteractionEvent event) {
+		if(event.getComponentId().equals("approveIntegration")) {
+			if (!event.getMember().getRoles().stream().anyMatch(role -> role.getName().equals("운영진")
+					|| role.getName().equals("부길드장") || role.getName().equals("길드장") || role.getName().equals("길드원"))) {
+				event.reply("이 버튼을 사용할 권한이 없습니다.").setEphemeral(true).queue();
+				return;
+			}
+			String nickname = event.getMessage().getEmbeds().get(0).getFields().get(0).getValue();
+			String memberId = event.getMessage().getEmbeds().get(0).getFields().get(1).getValue();
+			String userClass = event.getMessage().getEmbeds().get(0).getFields().get(2).getValue();
+			CacheRestAction<Member> MemberCache = event.getGuild().retrieveMemberById(memberId);
+			Member member = MemberCache.complete();
+			member.modifyNickname(nickname).queue();
+			for(Role role:  member.getRoles()) {
+				if(role.getName().equals("운영진")||
+						role.getName().equals("부길드장")||
+						role.getName().equals("길드원")||
+						role.getName().equals("서버 부스터")||
+						role.getName().equals("모험섬")||
+						role.getName().equals("섬령전")||
+						role.getName().equals("필드 보스")||
+						role.getName().equals("유령선")||
+						role.getName().equals("로웬 습격")
+						) continue;
+				event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
+			}
+			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(userClass, true).get(0)).queue();
+			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
+			event.getHook().editOriginalEmbeds(event.getMessage().getEmbeds().get(0))
+            .setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
+            .queue();
+			 event.reply("변경 되었습니다.").queue();
+		}else if(event.getComponentId().equals("rejectIntegration")){
+			event.getHook().editOriginalEmbeds(event.getMessage().getEmbeds().get(0))
+            .setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
+            .queue();
+			 event.reply("반려 되었습니다.").queue();
+		}
+		
+	}
 	
 	
 	

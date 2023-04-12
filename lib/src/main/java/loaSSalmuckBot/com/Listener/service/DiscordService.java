@@ -86,7 +86,7 @@ public class DiscordService {
 				break;
 			}
 			case "tower": {
-				illiakan(event);
+				tower(event);
 				break;
 			}
 		}

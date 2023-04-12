@@ -36,6 +36,10 @@ public class GuildListener extends ListenerAdapter {
 		String msg = event.getMessage().getContentRaw();
 
 		String[] msgSplit = msg.split(" ");
+		if (msgSplit[0].equals("!check")) {
+			VoiceChannelEntity entity = voiceService.getChannelByGiven(Given.WELCOMECHAN);
+			System.out.println(entity);
+		}
 		if (msgSplit[0].equals("!ban")) {
 			if (msgSplit.length == 1) {
 				channel.sendMessage("명령어가 잘못 되었습니다. \r\n" + "!ban [userId] [ban reason]\r\n" + "userId : id , 필수값\r\n"
@@ -77,29 +81,27 @@ public class GuildListener extends ListenerAdapter {
 		if (entity == null)
 			return;
 		StringBuilder builder = new StringBuilder();
-		builder.append(":one:닉네임은 인게임 아이디로 변경");
+		builder.append(":one:디스코드 이용시 길드원간 매너를 필수");
 		builder.append(System.getProperty("line.separator"));
-		builder.append(":two:디스코드 이용시 길드원간 매너를 필수");
+		builder.append(":two:사유없이 탈퇴한 경우 재가입이 불가");
 		builder.append(System.getProperty("line.separator"));
-		builder.append(":three:사유없이 탈퇴한 경우 재가입이 불가");
+		builder.append(":three:길드 컨텐츠 강제없는 자유");
 		builder.append(System.getProperty("line.separator"));
-		builder.append(":four:길드 컨텐츠 강제없는 자유");
-		builder.append(System.getProperty("line.separator"));
-		builder.append(":five:활동이 저조한 경우 추방 될 수 있음");
+		builder.append(":four:인게임 및 디스코드 활동이 저조한 경우 추방 될 수 있음");
 		MessageEmbed embed = new EmbedBuilder().setAuthor("로스트아크 카마인 오드길드").setTitle("**어서오세요. 반갑습니다!**")
 				.setColor(new Color(221, 245, 166))
 
 				.setThumbnail(
 						"https://cdn-longterm.mee6.xyz/plugins/welcome/images/832794285178355714/0074d4b6bdfc6b7bc3c4dd60c36d5595f5f2687c033090e5c2abb8154407c538.gif")
 				.setDescription(event.getMember().getAsMention() + "님, **카마인 오드 길드**에 오신 것을 환영합니다. :hugging:")
-				.addField(":loudspeaker: 잠시만 기다리시면 운영진이 등업 해드립니다!",
+				.addField(":loudspeaker: `/연동 {인게임닉네임}` 명령어를 입력 후 운영진을 찾아주세요!!",
 						"<@&832801295336341516><@&832801296645488651><@&832801297865506826>", false)
-				.addField(":warning: **가입 전 꼭 확인해주세요!**", builder.toString(), false)
+				.addField(":warning: **가입 전 꼭 꼭 확인해주세요!**", builder.toString(), false)
 				.setImage(
 						"https://cdn-longterm.mee6.xyz/plugins/welcome/images/832794285178355714/76e1dcbb050177ef4917a6ac6e69c9e851d816008a3a1b2e4c6d4444e0963e8a.gif")
 				.setFooter("잘 부탁드립니다!!").build();
 
-		event.getGuild().getTextChannelById(entity.getId()).sendMessageEmbeds(embed).queue();
+		event.getGuild().getTextChannelById(entity.getChannelId()).sendMessageEmbeds(embed).queue();
 
 	}
 
@@ -108,7 +110,7 @@ public class GuildListener extends ListenerAdapter {
 		VoiceChannelEntity entity = voiceService.getChannelByGiven(Given.WELCOMECHAN);
 		if (entity == null)
 			return;
-		event.getGuild().getTextChannelById(entity.getId()).sendMessage(event.getUser().getName() + "님 안녕히 가세요.")
+		event.getGuild().getTextChannelById(entity.getChannelId()).sendMessage(event.getUser().getName() + "님 안녕히 가세요.")
 				.queue();
 	}
 
