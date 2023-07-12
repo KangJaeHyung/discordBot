@@ -169,7 +169,6 @@ public class ScheduleUtil {
 						String.class);
 				if(!response.getStatusCode().equals(HttpStatus.OK)) return;
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
-				log.info("response : {}", profile);
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
 				for(Role role:  member.getRoles()) {
 					if(role.getName().equals("운영진")||

@@ -218,7 +218,7 @@ public class CommandListener extends ListenerAdapter {
 								.addField("Member", memberId, true)
 								.addField("Class", userClass,true)
 								.setImage(response.getCharacterImage())
-								.setFooter("승인 합니까?").build();
+								.setFooter("승인 후 등업됩니다").build();
 						
 						event.getHook().editOriginalEmbeds(embed).setContent("").setActionRow(Button.success("approveIntegration", "승인"), Button.danger("rejectIntegration", "반려")).queue();
 						
@@ -270,6 +270,11 @@ public class CommandListener extends ListenerAdapter {
 				break;
 			}	
 		}
+//		case "play": {
+//				discordService.playMusic(event);
+//				break;
+////			
+//		}
 //		case "프로필": {
 //			
 //			}
@@ -307,7 +312,7 @@ public class CommandListener extends ListenerAdapter {
 			}
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
-			
+			member.modifyNickname(nickname).queue();
 			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
 			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
             .queue();
@@ -374,6 +379,7 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("연동", "현재 디스코드 닉네임을 로스트아크api와 연동하여 닉네임을 변경합니다.").addOption(OptionType.STRING, "user", "유저", true).addOption(OptionType.USER, "member", "변경할 유저", false));
 		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
 		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
+		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
 				
 		
 //		data.add(Commands.slash("유저생성","유저 생성합니다.").addOption(OptionType.USER, "user", "유저" , true));

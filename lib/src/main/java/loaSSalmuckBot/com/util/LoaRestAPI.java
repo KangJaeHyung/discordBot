@@ -112,10 +112,8 @@ public class LoaRestAPI {
         
         try {
         	ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        	log.info("response : {}",response);
         	if(!response.getStatusCode().equals(HttpStatus.OK))  	return  CompletableFuture.completedFuture(new ArmoryProfile(true));
         	ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
-	    	log.info("response : {}",profile);
 	    	return  CompletableFuture.completedFuture(profile);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -616,12 +614,10 @@ public class LoaRestAPI {
 	    UriComponents uri = UriComponentsBuilder.fromHttpUrl(gptUrl).build(false);
 
 	    // 6. HTTP 요청 수행 및 결과 반환
-	    log.info("request : {}",entity);
 	    HashMap<String, Object> profile=null;
 	    try {
 	    	ResponseEntity<String> response = restTemplate.exchange(uri.toUri(), HttpMethod.POST, entity, String.class);
 	    	profile =mapper.readValue(response.getBody(), HashMap.class);
-	    	log.info("response : {}",profile);
 	    	return  CompletableFuture.completedFuture(((List<HashMap<String, HashMap<String, Object>>>) profile.get("choices")).get(0).get("message").get("content").toString());
 		} catch (Exception e) {
 			return CompletableFuture.completedFuture("죄송합니다 말을 이해 못했습니다.");
