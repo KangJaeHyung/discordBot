@@ -1,8 +1,6 @@
 package loaSSalmuckBot.com.Listener.service;
 
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,10 +18,7 @@ import loaSSalmuckBot.com.api.jpa.userBan.UserBanEntity;
 import loaSSalmuckBot.com.api.jpa.userBan.UserBanRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
-import loaSSalmuckBot.com.lavaplayer.PlayerManager;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
@@ -47,39 +42,7 @@ public class DiscordService {
 	private ResourceLoader resourceLoader;
 	
 	
-	public void playMusic(SlashCommandInteractionEvent event) {
-		Member member = event.getMember();
-        GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if(!memberVoiceState.inAudioChannel()) {
-            event.reply("You need to be in a voice channel").queue();
-            return;
-        }
-
-        Member self = event.getGuild().getSelfMember();
-        GuildVoiceState selfVoiceState = self.getVoiceState();
-
-        if(!selfVoiceState.inAudioChannel()) {
-            event.getGuild().getAudioManager().openAudioConnection(memberVoiceState.getChannel());
-        } else {
-            if(selfVoiceState.getChannel() != memberVoiceState.getChannel()) {
-                event.reply("You need to be in the same channel as me").queue();
-                return;
-            }
-        }
-
-        String name = event.getOption("name").getAsString();
-        try {
-            new URI(name);
-        } catch (URISyntaxException e) {
-            name = "ytsearch:" + name;
-        }
-
-        PlayerManager playerManager = PlayerManager.get();
-        event.reply("Playing").queue();
-        playerManager.play(event.getGuild(), name);
-	}
-	
 	
 	public List<UserChatEntity> getBeforeUserChat(String userId) {
 		List<UserChatEntity> entityOp=  userChatRepository.findTop10ByUserIdOrderByIdDesc(userId);
