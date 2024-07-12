@@ -19,7 +19,7 @@ public class ArmoryProfile {
 	private Integer totalSkillPoint;
 	private List<HashMap<String,Object>> stats;
 	private List<HashMap<String,Object>> tendencies;
-	private HashMap<String, Object> arkpassive;
+	private HashMap<String, Object> arkPassive;
 	private String serverName;
 	private String characterName;
 	private String characterLevel;
