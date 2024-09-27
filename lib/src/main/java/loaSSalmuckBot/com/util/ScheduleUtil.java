@@ -170,22 +170,7 @@ public class ScheduleUtil {
 				if(!response.getStatusCode().equals(HttpStatus.OK)) return;
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
-				for(Role role:  member.getRoles()) {
-					if(role.getName().equals("운영진")||
-							role.getName().equals("부길드장")||
-							role.getName().equals("길드원")||
-							role.getName().equals("서버 부스터")||
-							role.getName().equals("모험섬")||
-							role.getName().equals("섬령전")||
-							role.getName().equals("필드 보스")||
-							role.getName().equals("유령선")||
-							role.getName().equals("로웬 습격")
-							) continue;
-					guild.removeRoleFromMember(member, role).queue();
-				}
 				member.modifyNickname(afterNick).queue();
-				guild.addRoleToMember(member,guild.getRolesByName(profile.getCharacterClassName(), true).get(0)).queue();
-				guild.addRoleToMember(member,guild.getRolesByName("길드원", true).get(0)).queue();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				log.info("member {}" , member.getNickname());

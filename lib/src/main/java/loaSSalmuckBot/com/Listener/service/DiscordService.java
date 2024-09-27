@@ -1,6 +1,8 @@
 package loaSSalmuckBot.com.Listener.service;
 
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import loaSSalmuckBot.com.api.jpa.user.UserEntity;
+import loaSSalmuckBot.com.api.jpa.user.UserRepository;
 import loaSSalmuckBot.com.api.jpa.userBan.UserBanEntity;
 import loaSSalmuckBot.com.api.jpa.userBan.UserBanRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
@@ -42,6 +46,24 @@ public class DiscordService {
 	private ResourceLoader resourceLoader;
 	
 	
+	@Autowired
+	private UserRepository userRepository;
+	
+	public void setBirthday(String memberId, Date date) {
+				
+		UserEntity userEntity = userRepository.findById(memberId).orElse(new UserEntity());
+		userEntity.setBirthDate(date);
+		userEntity.setUserId(memberId); 
+		userRepository.save(userEntity);
+	}
+	
+	public void setUser(String memberId, String nickName, String userClass) {
+		UserEntity userEntity = userRepository.findById(memberId).orElse(new UserEntity());
+		userEntity.setNickName(nickName);
+		userEntity.setUserClass(userClass);
+		userEntity.setUserId(memberId);
+		userRepository.save(userEntity);
+	}
 
 	
 	public List<UserChatEntity> getBeforeUserChat(String userId) {

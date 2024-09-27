@@ -25,3 +25,4 @@ public class UserChatEntity {
 	@Column(name = "request_chat") 				private String requestChat;
 	@Column(name = "response_chat")				private String responseChat;
 }
+ 

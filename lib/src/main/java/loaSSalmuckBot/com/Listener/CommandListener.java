@@ -1,7 +1,10 @@
 package loaSSalmuckBot.com.Listener;
 
 import java.awt.Color;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -13,6 +16,7 @@ import loaSSalmuckBot.com.Listener.service.DiscordService;
 import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
+import loaSSalmuckBot.com.api.jpa.user.UserEntity;
 import loaSSalmuckBot.com.util.LoaRestAPI;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -137,6 +141,20 @@ public class CommandListener extends ListenerAdapter {
 			} catch (Exception e) {
 				e.printStackTrace();
 				event.reply("봇 채널 이벤트 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
+			}
+			
+			break;
+		}
+		case "생일채널설정": {
+			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
+				voiceService.createBirthDayChannel(event);
+			} catch (Exception e) {
+				e.printStackTrace();
+				event.reply("생일채널 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
 			}
 			
 			break;
@@ -270,6 +288,27 @@ public class CommandListener extends ListenerAdapter {
 				break;
 			}	
 		}
+		case "생일설정": {
+			
+            String memberId = event.getMember().getId();
+            String date = String.valueOf(event.getOption("date").getAsInt());
+            Date date2 = null;
+          //birthday 를 date로 변환
+			try {
+
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+				LocalDate localDate = LocalDate.parse(date, formatter);
+				date2 = java.sql.Date.valueOf(localDate);
+			} catch (Exception e) {
+				event.reply("생일을 정확히 입렵해주세요 ex)19950307").queue();
+				return;
+			}
+    		
+			discordService.setBirthday(memberId, date2);
+            
+            event.reply("생일이 지정되었습니다.").queue();
+            break;
+		}
 //		case "play": {
 //				discordService.playMusic(event);
 //				break;
@@ -282,6 +321,37 @@ public class CommandListener extends ListenerAdapter {
 
 	}
 	
+	
+	public void initClass(List<String> classes) {
+		classes.add("워로드");
+		classes.add("버서커");
+		classes.add("디스트로이어");
+		classes.add("홀리나이트");
+		classes.add("슬레이어");
+		classes.add("배틀마스터");
+		classes.add("인파이터");
+		classes.add("기공사");
+	    classes.add("창술사");
+	    classes.add("스트라이커");
+	    classes.add("브레이커");
+	    classes.add("데빌헌터");
+	    classes.add("블래스터");
+	    classes.add("호크아이");
+	    classes.add("스카우트");
+	    classes.add("건슬링어");
+	    classes.add("서머너");
+	    classes.add("아르카나");
+	    classes.add("바드");
+	    classes.add("소서리스");
+	    classes.add("데모닉");
+	    classes.add("리퍼");
+	    classes.add("블레이드");
+	    classes.add("소울이터");
+	    classes.add("도화가");
+	    classes.add("기상술사");
+	    
+		
+	}
 
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -296,23 +366,15 @@ public class CommandListener extends ListenerAdapter {
 			String userClass = event.getMessage().getEmbeds().get(0).getFields().get(2).getValue();
 			CacheRestAction<Member> MemberCache = event.getGuild().retrieveMemberById(memberId);
 			Member member = MemberCache.complete();
-			member.modifyNickname(nickname).queue();
+			List<String> classes = new ArrayList<>();
+			initClass(classes);
 			for(Role role:  member.getRoles()) {
-				if(role.getName().equals("운영진")||
-						role.getName().equals("부길드장")||
-						role.getName().equals("길드원")||
-						role.getName().equals("서버 부스터")||
-						role.getName().equals("모험섬")||
-						role.getName().equals("섬령전")||
-						role.getName().equals("필드 보스")||
-						role.getName().equals("유령선")||
-						role.getName().equals("로웬 습격")
-						) continue;
-				event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
+				if(classes.contains(role.getName())) event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
 			}
-			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
 			member.modifyNickname(nickname).queue();
+			discordService.setUser(memberId, nickname, userClass);
+			
 			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
 			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
             .queue();
@@ -380,6 +442,7 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
 		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
+		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.INTEGER, "date", "생일 8자리 숫자 ex)19950307", true));
 				
 		
 //		data.add(Commands.slash("유저생성","유저 생성합니다.").addOption(OptionType.USER, "user", "유저" , true));
