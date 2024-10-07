@@ -39,7 +39,7 @@ public class JdaConfiguration {
 //				.setMemberCachePolicy(MemberCachePolicy.ALL)
 				.enableCache(CacheFlag.VOICE_STATE).setMemberCachePolicy(MemberCachePolicy.DEFAULT).build();
 
-		jda.addEventListener(chattingListener(), voiceChannelListener(), myApplicationCommand());
+		jda.addEventListener(chattingListener(), voiceChannelListener(), myApplicationCommand(),birthChannelListener());
         return jda;
     }
     
