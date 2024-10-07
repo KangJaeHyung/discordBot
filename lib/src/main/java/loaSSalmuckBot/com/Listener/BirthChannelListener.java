@@ -25,7 +25,7 @@ public class BirthChannelListener extends ListenerAdapter {
 	@Autowired
 	private VoiceChannelRepository voiceChannelRepository;
 
-	public static String  msgId = "";
+	public static String  msgId = null;
 		
 	@Override
 	public void onReady(ReadyEvent event) {
@@ -39,7 +39,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			// 먼저 기존의 메시지를 삭제
 			if (channel != null) {
 				System.out.println("메세지 보내기");
-				channel.deleteMessageById(msgId);
+				if(null != msgId) channel.deleteMessageById(msgId);
 				MessageCreateData message = new MessageCreateBuilder().setContent("생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기") // '생일 설정하기' 버튼 생성
 						).build();
