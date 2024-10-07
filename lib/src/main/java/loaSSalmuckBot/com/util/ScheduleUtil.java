@@ -78,21 +78,6 @@ public class ScheduleUtil {
 
 	}
 	
-	@Scheduled(fixedRate = 60000) // 
-	public void checkForNewVideos() {
-		List<UserEntity> users = userRepository.findAll();
-		List<UserEntity> birthUsers = new ArrayList<>();
-		for(UserEntity user : users) {
-            if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
-                birthUsers.add(user);
-            }
-        }
-		for(UserEntity birthUser : birthUsers) {
-			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN).getChannelId());
-            channel.sendMessage("오늘은 " + birthUser.getNickName()+"(<@"+birthUser.getUserId()+">)" + "님의 생일입니다!").queue();
-		}
-
-	}
 
 	private static final String oddGuild = "832794285178355714";
 	private static final String subGuildMaster = "832801296645488651";

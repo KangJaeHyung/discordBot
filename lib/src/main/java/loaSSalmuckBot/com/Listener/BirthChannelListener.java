@@ -27,6 +27,9 @@ public class BirthChannelListener extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
+		// 봇이 준비되면 실행되는 이벤트
+		System.out.println("봇이 준비되었습니다");
+		// 생일 채널에 메시지를 보냄
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
 		if (entity != null) {
 			TextChannel channel = event.getJDA().getTextChannelById(entity.getChannelId());
