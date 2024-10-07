@@ -236,6 +236,7 @@ public class CommandListener extends ListenerAdapter {
 								.addField("Nickname",name,true)
 								.addField("Member", memberId, true)
 								.addField("Class", userClass,true)
+								.addField("name",response.getCharacterName(),true)
 								.setImage(response.getCharacterImage())
 								.setFooter("승인 후 등업됩니다").build();
 						
@@ -365,6 +366,7 @@ public class CommandListener extends ListenerAdapter {
 			String nickname = event.getMessage().getEmbeds().get(0).getFields().get(0).getValue();
 			String memberId = event.getMessage().getEmbeds().get(0).getFields().get(1).getValue();
 			String userClass = event.getMessage().getEmbeds().get(0).getFields().get(2).getValue();
+			String name = event.getMessage().getEmbeds().get(0).getFields().get(3).getValue();
 			CacheRestAction<Member> MemberCache = event.getGuild().retrieveMemberById(memberId);
 			Member member = MemberCache.complete();
 			List<String> classes = new ArrayList<>();
@@ -374,7 +376,7 @@ public class CommandListener extends ListenerAdapter {
 			}
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
 			member.modifyNickname(nickname).queue();
-			discordService.setUser(memberId, nickname, userClass);
+			discordService.setUser(memberId, name, userClass);
 			
 			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
 			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
