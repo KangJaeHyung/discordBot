@@ -25,6 +25,8 @@ public class BirthChannelListener extends ListenerAdapter {
 	@Autowired
 	private VoiceChannelRepository voiceChannelRepository;
 
+	public static String  msgId = "";
+		
 	@Override
 	public void onReady(ReadyEvent event) {
 		// 봇이 준비되면 실행되는 이벤트
@@ -35,20 +37,14 @@ public class BirthChannelListener extends ListenerAdapter {
 			TextChannel channel = event.getJDA().getTextChannelById(entity.getChannelId());
 			// 먼저 기존의 메시지를 삭제
 			if (channel != null) {
-				// 1. 최근 14일 이내 메시지를 bulkDelete로 삭제
-				channel.getIterableHistory().takeAsync(100).thenAccept(messages -> {
-					if (!messages.isEmpty()) {
-						channel.purgeMessages(messages); // 일괄 삭제
-					}
-					// 2. 이후 새로운 생일 메시지를 보냄
-					 MessageCreateData message = new MessageCreateBuilder()
+					channel.deleteMessageById(msgId);
+					MessageCreateData message = new MessageCreateBuilder()
 						        .setContent("생일을 설정하려면 아래 버튼을 눌러주세요.")
 						        .addActionRow(
 						            Button.primary("set_birthday", "생일 설정하기")  // '생일 설정하기' 버튼 생성
 						        ).build();
 						    
-						    channel.sendMessage(message).queue();
-				});
+						    channel.sendMessage(message).queue(t ->  msgId = t.getId() );
 			}
 		}
 
