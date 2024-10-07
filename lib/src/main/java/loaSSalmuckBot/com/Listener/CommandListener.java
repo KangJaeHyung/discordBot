@@ -16,7 +16,6 @@ import loaSSalmuckBot.com.Listener.service.DiscordService;
 import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
-import loaSSalmuckBot.com.api.jpa.user.UserEntity;
 import loaSSalmuckBot.com.util.LoaRestAPI;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -25,18 +24,19 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.CacheRestAction;
 
@@ -51,6 +51,7 @@ public class CommandListener extends ListenerAdapter {
 
 	@Autowired
 	private LoaRestAPI api;
+	
 	
 	
 
@@ -290,7 +291,7 @@ public class CommandListener extends ListenerAdapter {
 		}
 		case "생일설정": {
 			
-            String memberId = event.getMember().getId();
+            String memberId = event.getOption("member").getAsMember()==null?event.getMember().getId():event.getOption("member").getAsMember().getId();
             String date = String.valueOf(event.getOption("date").getAsInt());
             Date date2 = null;
           //birthday 를 date로 변환
