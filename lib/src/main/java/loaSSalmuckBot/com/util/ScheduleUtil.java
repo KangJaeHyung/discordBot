@@ -88,7 +88,7 @@ public class ScheduleUtil {
             }
         }
 		for(UserEntity birthUser : birthUsers) {
-			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN).getId());
+			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN).getChannelId());
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue();
 		}
 
