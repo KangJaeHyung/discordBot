@@ -1,6 +1,5 @@
 package loaSSalmuckBot.com.util;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,8 +18,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +31,9 @@ import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
+import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import loaSSalmuckBot.com.api.jpa.user.UserEntity;
+import loaSSalmuckBot.com.api.jpa.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -56,6 +55,10 @@ public class ScheduleUtil {
 	private final String apiKey;
 
 	private ScheduledFuture<?> scheduledFuture;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private VoiceChannelRepository voiceChannelRepository;
 
 	@Value("${lostark.api.profile}")
 	private String profileUrl;
@@ -75,50 +78,18 @@ public class ScheduleUtil {
 
 	}
 	
-	@Scheduled(fixedRate = 3600000) // 5분(300000ms)마다 실행
+	@Scheduled(fixedRate = 60000) // 
 	public void checkForNewVideos() {
-		log.info("new videos check...");
-		VoiceChannelEntity entity = voiceService.getChannelByGiven(Given.YUTUBECHAN);
-		if (entity == null)
-			return;
-		log.info("channel {}", entity.getId());
-		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getId());
-		try {
-			for (String channelId : channelIds) {
-				YouTube.Search.List search = youtube.search().list("id,snippet");
-				search.setKey(apiKey);
-				search.setChannelId(channelId);
-				search.setType("video");
-				search.setOrder("date");
-				search.setMaxResults(10L);
-
-				SearchListResponse response = search.execute();
-				List<SearchResult> items = response.getItems();
-
-				if (items.size()==0) {
-					log.info("No new videos found.");
-					return;
-				}
-
-				for (SearchResult result : items) {
-					String videoId = result.getId().getVideoId();
-					String title = result.getSnippet().getTitle();
-					Date uploadAt = new Date(result.getSnippet().getPublishedAt().getValue());
-					Date now = new Date();
-//					System.out.println(now.getTime()-300000+" "+uploadAt.getTime()+" "+ now.getTime());
-					if (uploadAt.getTime() <= now.getTime() && uploadAt.getTime() >= now.getTime() - 3600) {
-						String videoUrl = "https://www.youtube.com/watch?v=" + videoId;
-						String msg = "**" + result.getSnippet().getChannelTitle() + "** 에 새로운 영상이 올라왔습니다."
-								+ System.getProperty("line.separator");
-						msg = msg + title + System.getProperty("line.separator");
-						msg = msg + videoUrl;
-						channel.sendMessage(msg).queue();
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			scheduledFuture.cancel(false);
+		List<UserEntity> users = userRepository.findAll();
+		List<UserEntity> birthUsers = new ArrayList<>();
+		for(UserEntity user : users) {
+            if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
+                birthUsers.add(user);
+            }
+        }
+		for(UserEntity birthUser : birthUsers) {
+			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN).getId());
+            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue();
 		}
 
 	}
@@ -128,7 +99,7 @@ public class ScheduleUtil {
 	private static final String guildManager = "832801297865506826";
 	private static final String guildMamger = "995938730286264460";
 
-	@Scheduled(cron = "0 0 0 * * *") // 5분(300000ms)마다 실행
+	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
@@ -177,6 +148,20 @@ public class ScheduleUtil {
 				e.printStackTrace();
 			}
 		}
+		
+		//유저 생일자 찾기
+		List<UserEntity> users = userRepository.findAll();
+		List<UserEntity> birthUsers = new ArrayList<>();
+		for(UserEntity user : users) {
+            if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
+                birthUsers.add(user);
+            }
+        }
+		for(UserEntity birthUser : birthUsers) {
+			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN).getId());
+            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue();
+		}
+            
 	}
 	
 	//기본 공격력 = (스탯*무공/6)^(1/2)

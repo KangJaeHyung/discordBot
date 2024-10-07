@@ -442,8 +442,8 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
 		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
-		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.INTEGER, "date", "생일 8자리 숫자 ex)19950307", true));
-				
+		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.INTEGER, "date", "생일 8자리 숫자 ex)19950307", true).addOption(OptionType.USER,"member","변경할 유저", false));
+		data.add(Commands.slash("생일채널설정", "생일 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
 		
 //		data.add(Commands.slash("유저생성","유저 생성합니다.").addOption(OptionType.USER, "user", "유저" , true));
 		event.getGuild().updateCommands().addCommands(data).queue();
