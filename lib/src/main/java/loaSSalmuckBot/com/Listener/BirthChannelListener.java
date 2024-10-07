@@ -34,20 +34,22 @@ public class BirthChannelListener extends ListenerAdapter {
 		// 생일 채널에 메시지를 보냄
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
 		if (entity != null) {
-			TextChannel channel = event.getJDA().getTextChannelById(entity.getChannelId());
+			TextChannel channel = event.getJDA().getGuildById(entity.getGuildId())
+					.getTextChannelById(entity.getChannelId());
 			// 먼저 기존의 메시지를 삭제
 			if (channel != null) {
-					channel.deleteMessageById(msgId);
-					MessageCreateData message = new MessageCreateBuilder()
-						        .setContent("생일을 설정하려면 아래 버튼을 눌러주세요.")
-						        .addActionRow(
-						            Button.primary("set_birthday", "생일 설정하기")  // '생일 설정하기' 버튼 생성
-						        ).build();
-						    
-						    channel.sendMessage(message).queue(t ->  msgId = t.getId() );
+				System.out.println("메세지 보내기");
+				channel.deleteMessageById(msgId);
+				MessageCreateData message = new MessageCreateBuilder().setContent("생일을 설정하려면 아래 버튼을 눌러주세요.")
+						.addActionRow(Button.primary("set_birthday", "생일 설정하기") // '생일 설정하기' 버튼 생성
+						).build();
+
+				channel.sendMessage(message).queue(t -> msgId = t.getId());
+			} else {
+				System.out.println("채널이 없습니다");
 			}
 		}
-
+ 
 	}
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent event) {
