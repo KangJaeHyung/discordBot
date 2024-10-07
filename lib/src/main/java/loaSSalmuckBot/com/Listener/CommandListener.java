@@ -291,7 +291,7 @@ public class CommandListener extends ListenerAdapter {
 		}
 		case "생일설정": {
 			
-            String memberId = event.getOption("member").getAsMember()==null?event.getMember().getId():event.getOption("member").getAsMember().getId();
+            String memberId = event.getOption("member")==null?event.getMember().getId():event.getOption("member").getAsMember().getId();
             String date = String.valueOf(event.getOption("date").getAsInt());
             Date date2 = null;
           //birthday 를 date로 변환

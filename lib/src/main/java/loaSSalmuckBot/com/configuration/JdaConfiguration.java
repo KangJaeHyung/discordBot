@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import loaSSalmuckBot.com.Listener.BirthChannelListener;
 import loaSSalmuckBot.com.Listener.CommandListener;
 import loaSSalmuckBot.com.Listener.GuildListener;
 import loaSSalmuckBot.com.Listener.VoiceChannelListener;
@@ -49,6 +50,10 @@ public class JdaConfiguration {
     @Bean
     public VoiceChannelListener voiceChannelListener() {
         return new VoiceChannelListener();
+    }
+    @Bean
+    public BirthChannelListener birthChannelListener() {
+        return new BirthChannelListener();
     }
     @Bean
     public GuildListener chattingListener() {
