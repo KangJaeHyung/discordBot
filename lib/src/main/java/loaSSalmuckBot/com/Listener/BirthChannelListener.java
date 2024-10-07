@@ -63,10 +63,6 @@ public class BirthChannelListener extends ListenerAdapter {
 	public void onButtonInteraction(ButtonInteractionEvent event) {
 		if (event.getComponentId().equals("set_birthday")) {
 			 // 모달 창을 생성
-			TextInput yearInput = TextInput.create("year", "월 (YY)", TextInputStyle.SHORT)
-	                .setPlaceholder("예: 95 비 공개일 경우 00")
-	                .setRequired(true)
-	                .build();
 			 TextInput monthInput = TextInput.create("month", "월 (MM)", TextInputStyle.SHORT)
 		                .setPlaceholder("예: 12")
 		                .setRequired(true)
@@ -89,34 +85,27 @@ public class BirthChannelListener extends ListenerAdapter {
 	public void onModalInteraction(ModalInteractionEvent event) {
 	    if (event.getModalId().equals("birthday_modal")) {
 	    	try {
-	    		String yearS = event.getValue("year").getAsString();
 		        String monthS = event.getValue("month").getAsString();
 		        String dayS = event.getValue("day").getAsString();
 		        
-		        Integer year = Integer.parseInt(yearS);
+
 		        Integer month = Integer.parseInt(monthS);
 		        Integer day = Integer.parseInt(dayS);
-		        if(year>=100) throw new Exception("년도 에러");
+
 		        if(month>=13||month==0 ) throw new Exception("월 에러");
 		        if(day>=32||day==0) throw new Exception("일 에러");
 		        
-		     // 연도 처리를 위한 로직
-		        if (year >= 0 && year <= 24) {
-		            year += 2000;
-		        } else {
-		            year += 1900;
-		        }
 
 		        try {
 		            // LocalDate로 변환하여 반환
-		        	Date d = java.sql.Date.valueOf(LocalDate.of(year, month, day));
+		        	Date d = java.sql.Date.valueOf(LocalDate.of(2000, month, day));
 		        	
 		        	discordService.setBirthday(event.getMember().getId(), d);
 		        } catch (DateTimeParseException e) {
 		            throw new IllegalArgumentException("Invalid date values.", e);
 		        }
 		        
-		        event.reply("생일이 성공적으로 설정되었습니다: "+ year+"년 "+ month + "월 " + day + "일").setEphemeral(true).queue();
+		        event.reply("생일이 성공적으로 설정되었습니다: "+ month + "월 " + day + "일").setEphemeral(true).queue();
 		        
 		        
 		    } catch (Exception e) {
