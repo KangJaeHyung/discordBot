@@ -65,6 +65,10 @@ public class DiscordService {
 		userRepository.save(userEntity);
 	}
 
+	public void removeUser(String memberId) {
+		userRepository.deleteById(memberId);
+	}
+
 	
 	public List<UserChatEntity> getBeforeUserChat(String userId) {
 		List<UserChatEntity> entityOp=  userChatRepository.findTop10ByUserIdOrderByIdDesc(userId);

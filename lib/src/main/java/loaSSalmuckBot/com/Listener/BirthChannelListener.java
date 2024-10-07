@@ -1,9 +1,14 @@
 package loaSSalmuckBot.com.Listener;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
+import loaSSalmuckBot.com.Listener.service.DiscordService;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -26,6 +31,9 @@ public class BirthChannelListener extends ListenerAdapter {
 	private VoiceChannelRepository voiceChannelRepository;
 
 	public static String  msgId = null;
+	
+	@Autowired
+	private DiscordService discordService;
 		
 	@Override
 	public void onReady(ReadyEvent event) {
@@ -40,7 +48,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			if (channel != null) {
 				System.out.println("메세지 보내기");
 				if(null != msgId) channel.deleteMessageById(msgId);
-				MessageCreateData message = new MessageCreateBuilder().setContent("생일을 설정하려면 아래 버튼을 눌러주세요.")
+				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기") // '생일 설정하기' 버튼 생성
 						).build();
 
@@ -80,12 +88,45 @@ public class BirthChannelListener extends ListenerAdapter {
 	@Override
 	public void onModalInteraction(ModalInteractionEvent event) {
 	    if (event.getModalId().equals("birthday_modal")) {
-	    	String year = event.getValue("year").getAsString();
-	        String month = event.getValue("month").getAsString();
-	        String day = event.getValue("day").getAsString();
+	    	try {
+	    		String yearS = event.getValue("year").getAsString();
+		        String monthS = event.getValue("month").getAsString();
+		        String dayS = event.getValue("day").getAsString();
+		        
+		        Integer year = Integer.parseInt(yearS);
+		        Integer month = Integer.parseInt(monthS);
+		        Integer day = Integer.parseInt(dayS);
+		        if(year>=100) throw new Exception("년도 에러");
+		        if(month>=13||month==0 ) throw new Exception("월 에러");
+		        if(day>=32||day==0) throw new Exception("일 에러");
+		        
+		     // 연도 처리를 위한 로직
+		        if (year >= 0 && year <= 24) {
+		            year += 2000;
+		        } else {
+		            year += 1900;
+		        }
+
+		        try {
+		            // LocalDate로 변환하여 반환
+		        	Date d = java.sql.Date.valueOf(LocalDate.of(year, month, day));
+		        	
+		        	discordService.setBirthday(event.getMember().getId(), d);
+		        } catch (DateTimeParseException e) {
+		            throw new IllegalArgumentException("Invalid date values.", e);
+		        }
+		        
+		        event.reply("생일이 성공적으로 설정되었습니다: "+ year+"년 "+ month + "월 " + day + "일").setEphemeral(true).queue();
+		        
+		        
+		    } catch (Exception e) {
+		    	event.reply("생일이 정상적이지 않습니다 다시 시도해 주십시오.").setEphemeral(true).queue();
+			}
+	    	
+	        
 	        
 	        // 사용자가 입력한 생일 정보를 저장하거나 처리
-	        event.reply("생일이 성공적으로 설정되었습니다: "+ year+"년 "+ month + "월 " + day + "일").setEphemeral(true).queue();
+	        
 	    }
 	}
 

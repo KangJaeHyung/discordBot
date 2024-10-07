@@ -110,6 +110,7 @@ public class GuildListener extends ListenerAdapter {
 		VoiceChannelEntity entity = voiceService.getChannelByGiven(Given.WELCOMECHAN);
 		if (entity == null)
 			return;
+		discordService.removeUser(event.getUser().getId());
 		event.getGuild().getTextChannelById(entity.getChannelId()).sendMessage(event.getUser().getName() + "님 안녕히 가세요.")
 				.queue();
 	}
