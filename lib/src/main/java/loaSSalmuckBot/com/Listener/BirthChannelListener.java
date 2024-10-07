@@ -74,7 +74,7 @@ public class BirthChannelListener extends ListenerAdapter {
 		                .build();
 
 		      Modal modal = Modal.create("birthday_modal", "생일을 설정해주세요 😊")
-		                    .addComponents(ActionRow.of(yearInput),ActionRow.of(monthInput), ActionRow.of(dayInput))
+		                    .addComponents(ActionRow.of(monthInput), ActionRow.of(dayInput))
 		                    .build();
 	        // 모달 창을 띄움
 	        event.replyModal(modal).queue();
