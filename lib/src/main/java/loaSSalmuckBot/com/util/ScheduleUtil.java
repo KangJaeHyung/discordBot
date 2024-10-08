@@ -112,7 +112,7 @@ public class ScheduleUtil {
 						String.class);
 				if(!response.getStatusCode().equals(HttpStatus.OK)) return;
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
-				UserEntity user = new UserEntity();
+				UserEntity user = userRepository.findById(member.getId()).orElse(new UserEntity());
 				user.setUserId(member.getId());
 				user.setNickName(profile.getCharacterName());
 				user.setUserClass(profile.getCharacterClassName());
