@@ -87,7 +87,6 @@ public class ScheduleUtil {
 	private static final String guildMamger = "995938730286264460";
 
 	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
-	@PostConstruct
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
@@ -148,7 +147,6 @@ public class ScheduleUtil {
 		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
 		if(channel == null) return;
 		for(String id :msgIds) {
-			
 			channel.deleteMessageById(id).queue();
 		}
 		msgIds.clear();
