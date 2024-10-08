@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -85,6 +87,7 @@ public class ScheduleUtil {
 	private static final String guildMamger = "995938730286264460";
 
 	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
+	@PostConstruct
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
@@ -125,6 +128,11 @@ public class ScheduleUtil {
 						String.class);
 				if(!response.getStatusCode().equals(HttpStatus.OK)) return;
 				ArmoryProfile profile = mapper.readValue(response.getBody(), ArmoryProfile.class);
+				UserEntity user = new UserEntity();
+				user.setUserId(member.getId());
+				user.setNickName(profile.getCharacterName());
+				user.setUserClass(profile.getCharacterClassName());
+				userRepository.save(user);
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
 				member.modifyNickname(afterNick).queue();
 			} catch (Exception e) {
@@ -143,6 +151,7 @@ public class ScheduleUtil {
 			
 			channel.deleteMessageById(id).queue();
 		}
+		msgIds.clear();
 		for(UserEntity user : users) {
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
