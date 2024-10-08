@@ -140,8 +140,9 @@ public class BirthChannelListener extends ListenerAdapter {
 	            }
 	        }
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
+			int count = 1;
 			for(UserEntity birthUser : birthUsers) {
-				msg += "🎈**"+birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				msg += "🎈**"+count+"."+birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
@@ -149,9 +150,10 @@ public class BirthChannelListener extends ListenerAdapter {
 		if (event.getComponentId().equals("all_birthday")) {
 			List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
+			int count = 1;
 			for(UserEntity birthUser : users) {
 				if(birthUser.getBirthDate() == null) continue;
-				msg += "🎈**"+birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				msg += "🎈**"+count +"." +birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
