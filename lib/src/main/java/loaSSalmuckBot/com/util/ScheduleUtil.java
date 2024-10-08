@@ -50,13 +50,9 @@ import net.dv8tion.jda.api.utils.concurrent.Task;
 public class ScheduleUtil {
 	ObjectMapper mapper = new ObjectMapper().configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
-	private final YouTube youtube;
-	private final List<String> channelIds;
-	private final VoiceService voiceService;
-	private final JDA jda;
-	private final String apiKey;
-
-	private ScheduledFuture<?> scheduledFuture;
+	@Autowired
+	private  JDA jda;
+	
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -68,18 +64,7 @@ public class ScheduleUtil {
 	@Value("${lostark.apiKey}")
 	private String loaApiKey;
 
-	@Autowired
-	public ScheduleUtil(@Value("${google.apiKey}") String apiKey,
-			@Value("${google.channelIds}") List<String> channelIds, VoiceService voiceService, JDA jda) {
-		youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), httpRequest -> {
-		}).setApplicationName("YouTubeNotifier").build();
-		this.channelIds = channelIds;
-		this.voiceService = voiceService;
-		this.jda = jda;
-		this.apiKey = apiKey;
 
-	}
-	
 
 	private static final String oddGuild = "832794285178355714";
 	private static final String subGuildMaster = "832801296645488651";
@@ -87,7 +72,6 @@ public class ScheduleUtil {
 	private static final String guildMamber = "995938730286264460";
 
 	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
-	@PostConstruct
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();

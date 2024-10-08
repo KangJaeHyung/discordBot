@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import loaSSalmuckBot.com.util.ScheduleUtil;
 
 @RestController
 @RequestMapping("/api/v1/test")
@@ -17,15 +18,21 @@ public class TestController {
 
 	@Autowired
 	private VoiceChannelRepository repository;
+	
+	@Autowired
+	private ScheduleUtil scheduleUtil;
 
 	@GetMapping("/{id}")
 	public VoiceChannelEntity getVoiceChannel(@PathVariable("id") Long id) {
 		return repository.findById(id).get();
 	}
 	
+	
 	@GetMapping()
-	public List<VoiceChannelEntity> getVoiceChannel() {
-		return repository.findAll();
+	public String init() {
+		scheduleUtil.checkUserInfo();
+		return "success";
 	}
+
 
 }
