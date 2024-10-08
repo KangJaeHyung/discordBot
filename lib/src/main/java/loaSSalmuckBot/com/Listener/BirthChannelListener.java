@@ -119,7 +119,7 @@ public class BirthChannelListener extends ListenerAdapter {
 	        }
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
 			for(UserEntity birthUser : birthUsers) {
-				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth() +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth()+1 +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
@@ -128,7 +128,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			List<UserEntity> users = userRepository.findAll();
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
 			for(UserEntity birthUser : users) {
-				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth() +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth()+1 +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
