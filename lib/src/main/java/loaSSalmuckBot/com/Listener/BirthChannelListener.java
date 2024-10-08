@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
@@ -64,6 +65,7 @@ public class BirthChannelListener extends ListenerAdapter {
 	}
 	
 	@Override
+	@Scheduled(fixedDelay = 600000 )//1시간에 한번씩 실행
 	public void onReady(ReadyEvent event) {
 		// 봇이 준비되면 실행되는 이벤트
 		System.out.println("봇이 준비되었습니다");

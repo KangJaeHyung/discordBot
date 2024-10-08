@@ -152,6 +152,17 @@ public class VoiceService {
 		this.createChannel(Given.BIRTHCHAN, channel);
 		event.reply("**" + channel.getName() + "**  생성이 완료 되었습니다.").queue();
 	}
+	
+	public void createBirthDayAlChannel(SlashCommandInteractionEvent event) {
+		TextChannel channel = event.getOption("channel").getAsChannel().asTextChannel();
+		if (voiceChannelRepository.findByChannelIdAndGiven(channel.getId(), Given.BIRTHCHAN2).isPresent()
+				|| voiceChannelRepository.countByGiven(Given.BIRTHCHAN2) > 0) {
+			event.reply("이미 생일채널 이벤트가 부여가 되어 있습니다.").queue();
+			return;
+		}
+		this.createChannel(Given.BIRTHCHAN2, channel);
+		event.reply("**" + channel.getName() + "**  생성이 완료 되었습니다.").queue();
+	}
 
 	private void createChannel(Given given, StandardGuildChannel channel) {
 		VoiceChannelEntity entity = new VoiceChannelEntity();

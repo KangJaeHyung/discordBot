@@ -137,17 +137,25 @@ public class ScheduleUtil {
 		//유저 생일자 찾기
 		List<UserEntity> users = userRepository.findAll();
 		List<UserEntity> birthUsers = new ArrayList<>();
+		for(String id :msgIds) {
+			TextChannel channel = jda.getGuildById(oddGuild)
+					.getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
+			channel.deleteMessageById(id).queue();
+		}
 		for(UserEntity user : users) {
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
             }
         }
 		for(UserEntity birthUser : birthUsers) {
-			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN).getId());
-            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue();
+			TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
+            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
+            
 		}
             
 	}
 	
+	
+	static private List<String> msgIds = new ArrayList<>();
 	//기본 공격력 = (스탯*무공/6)^(1/2)
 }

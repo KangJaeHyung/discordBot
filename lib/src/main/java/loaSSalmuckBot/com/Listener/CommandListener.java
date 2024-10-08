@@ -160,6 +160,20 @@ public class CommandListener extends ListenerAdapter {
 			
 			break;
 		}
+		case "생일알람채널설정": {
+			try {
+				if(!roleCheck(event)) {
+					event.reply("권한이 없습니다.").queue();
+					return;
+				}
+				voiceService.createBirthDayAlChannel(event);
+			} catch (Exception e) {
+				e.printStackTrace();
+				event.reply("생일알람채널 생성이 완료 되지 못하였습니다. 텍스트채널인지 다시한번 확인 해 주세요.").queue();
+			}
+			
+			break;
+		}
 //		case "공지채널설정": {
 //			try {
 //				if(!roleCheck(event)) {
@@ -270,6 +284,17 @@ public class CommandListener extends ListenerAdapter {
 			break;
 			
 		}
+		case "생일삭제": {
+			if(!roleCheck(event)) {
+				event.reply("권한이 없습니다.").queue();
+				return;
+			}
+			Member member =event.getOption("member").getAsMember();
+			discordService.setBirthday(member.getId(),null);
+			event.reply(member.getAsMention() +"의 생일을 삭제 하였습니다.").queue();
+			break;
+			
+		}
 		case "엘릭서": {
 			try {
 				event.reply("잠시만 기다려주세요...").queue();
@@ -293,7 +318,7 @@ public class CommandListener extends ListenerAdapter {
 		case "생일설정": {
 			
             String memberId = event.getOption("member")==null?event.getMember().getId():event.getOption("member").getAsMember().getId();
-            String date = String.valueOf(event.getOption("date").getAsInt());
+            String date = "2000"+String.valueOf(event.getOption("date").getAsInt());
             Date date2 = null;
           //birthday 를 date로 변환
 			try {
@@ -302,7 +327,7 @@ public class CommandListener extends ListenerAdapter {
 				LocalDate localDate = LocalDate.parse(date, formatter);
 				date2 = java.sql.Date.valueOf(localDate);
 			} catch (Exception e) {
-				event.reply("생일을 정확히 입렵해주세요 ex)19950307").queue();
+				event.reply("생일을 정확히 입렵해주세요 ex)0307").queue();
 				return;
 			}
     		
@@ -445,9 +470,10 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
 		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
-		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.INTEGER, "date", "생일 8자리 숫자 ex)19950307", true).addOption(OptionType.USER,"member","변경할 유저", false));
+		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.INTEGER, "date", "생일 4자리 숫자 ex)0307", true).addOption(OptionType.USER,"member","변경할 유저", false));
 		data.add(Commands.slash("생일채널설정", "생일 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
-		
+		data.add(Commands.slash("생일알람채널설정", "생일 알람 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
+		data.add(Commands.slash("생일삭제", "생일 삭제 설정 합니다.").addOption(OptionType.USER,"member","삭제할 유저", true));
 //		data.add(Commands.slash("유저생성","유저 생성합니다.").addOption(OptionType.USER, "user", "유저" , true));
 		event.getGuild().updateCommands().addCommands(data).queue();
 

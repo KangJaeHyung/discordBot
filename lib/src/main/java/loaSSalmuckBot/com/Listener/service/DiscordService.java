@@ -914,4 +914,11 @@ public class DiscordService {
 		userChatRepository.save(entity);
 	}
 
+	public void deleteBirthday(String id) {
+		// TODO Auto-generated method stub
+		//find user
+		userRepository.findById(id);
+		
+	}
+
 }

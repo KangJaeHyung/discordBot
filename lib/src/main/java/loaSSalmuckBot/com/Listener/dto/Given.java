@@ -11,6 +11,7 @@ public enum Given {
 	WELCOMECHAN("신입환영 채널 생성 이벤트"),
 	BOTCHAN("봇 채널 이벤트"),
 	BIRTHCHAN("생일 채널 이벤트"),
+	BIRTHCHAN2("생일 채널2 이벤트"),
 	;
 
 	private final String value;
