@@ -84,16 +84,17 @@ public class ScheduleUtil {
 	private static final String oddGuild = "832794285178355714";
 	private static final String subGuildMaster = "832801296645488651";
 	private static final String guildManager = "832801297865506826";
-	private static final String guildMamger = "995938730286264460";
+	private static final String guildMamber = "995938730286264460";
 
 	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
+	@PostConstruct
 	public void checkUserInfo() {
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
 //		roles.add(jda.getGuildById(oddGuild).getRoleById(subGuildMaster));
 //		roles.add();
 		Guild guild = jda.getGuildById(oddGuild);
-		Task<List<Member>> guildMembers = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRoleById(guildMamger));
+		Task<List<Member>> guildMembers = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRolesByName("길드원", true).get(0));
 		Task<List<Member>> guildManagers = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRoleById(guildManager));
 		Task<List<Member>> subMaster = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRoleById(subGuildMaster));
 		List<Member> members = new ArrayList<>();
