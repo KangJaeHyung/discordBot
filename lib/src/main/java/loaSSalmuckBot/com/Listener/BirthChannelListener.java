@@ -2,7 +2,11 @@ package loaSSalmuckBot.com.Listener;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +15,9 @@ import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.Listener.service.DiscordService;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
+import loaSSalmuckBot.com.api.jpa.user.UserEntity;
+import loaSSalmuckBot.com.api.jpa.user.UserRepository;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -35,6 +42,26 @@ public class BirthChannelListener extends ListenerAdapter {
 	@Autowired
 	private DiscordService discordService;
 		
+	@Autowired
+	private  JDA jda;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	
+	@PreDestroy
+	public void onDestroy() {
+		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
+		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
+		System.out.println("메세지 삭제");
+		if (channel != null) {
+			if (null != msgId)
+				channel.deleteMessageById(msgId);
+		} else {
+			System.out.println("채널이 없습니다");
+		}
+	}
+	
 	@Override
 	public void onReady(ReadyEvent event) {
 		// 봇이 준비되면 실행되는 이벤트
@@ -49,8 +76,10 @@ public class BirthChannelListener extends ListenerAdapter {
 				System.out.println("메세지 보내기");
 				if(null != msgId) channel.deleteMessageById(msgId);
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
-						.addActionRow(Button.primary("set_birthday", "생일 설정하기") // '생일 설정하기' 버튼 생성
-						).build();
+						.addActionRow(Button.primary("set_birthday", "생일 설정하기"))
+						.addActionRow(Button.secondary("month_birthday", "이번달 생일자 보기"))
+						.addActionRow(Button.secondary("all_birthday", "전체 생일 보기"))
+						.build();
 
 				channel.sendMessage(message).queue(t -> msgId = t.getId());
 			} else {
@@ -78,7 +107,33 @@ public class BirthChannelListener extends ListenerAdapter {
 		                    .build();
 	        // 모달 창을 띄움
 	        event.replyModal(modal).queue();
+	        return;
 		}
+		if (event.getComponentId().equals("month_birthday")) {
+			List<UserEntity> users = userRepository.findAll();
+			List<UserEntity> birthUsers = new ArrayList<>();
+			for(UserEntity user : users) {
+	            if(user.getBirthDate().getMonth() == new Date().getMonth()) {
+	                birthUsers.add(user);
+	            }
+	        }
+			String msg = "# **길드원 생일 확인** 🎂 \r\n";
+			for(UserEntity birthUser : birthUsers) {
+				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth() +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+			}
+			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
+	        return;
+		}
+		if (event.getComponentId().equals("all_birthday")) {
+			List<UserEntity> users = userRepository.findAll();
+			String msg = "# **길드원 생일 확인** 🎂 \r\n";
+			for(UserEntity birthUser : users) {
+				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth() +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+			}
+			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
+	        return;
+		}
+		
 	}
 	
 	@Override
