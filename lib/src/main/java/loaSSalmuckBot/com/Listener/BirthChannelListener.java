@@ -64,8 +64,27 @@ public class BirthChannelListener extends ListenerAdapter {
 		}
 	}
 	
+	@Scheduled(fixedDelay = 600000 )//10분마다
+	public void resetMsg() {
+		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
+		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
+		if (channel != null) {
+			if (null != msgId) channel.deleteMessageById(msgId).queue();
+			MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
+					.addActionRow(Button.primary("set_birthday", "생일 설정하기"),
+							Button.secondary("month_birthday", "이번달 생일자 보기"),
+							Button.secondary("all_birthday", "전체 생일 보기"))
+					.build();
+
+			channel.sendMessage(message).queue(t -> msgId = t.getId());
+		} else {
+			System.out.println("채널이 없습니다");
+		}
+	}
+
+
+	
 	@Override
-	@Scheduled(fixedDelay = 600000 )//1시간에 한번씩 실행
 	public void onReady(ReadyEvent event) {
 		// 봇이 준비되면 실행되는 이벤트
 		System.out.println("봇이 준비되었습니다");
