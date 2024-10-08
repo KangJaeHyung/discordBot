@@ -50,11 +50,6 @@ public class BirthChannelListener extends ListenerAdapter {
 	private UserRepository userRepository;
 	
 	
-	@PostConstruct
-	public void init() {
-	    System.out.println("빈 초기화됨");
-	}
-	
 	@PreDestroy
 	public void onDestroy() {
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
@@ -62,7 +57,7 @@ public class BirthChannelListener extends ListenerAdapter {
 		System.out.println("메세지 삭제");
 		if (channel != null) {
 			if (null != msgId)
-				channel.deleteMessageById(msgId);
+				channel.deleteMessageById(msgId).queue();
 		} else {
 			System.out.println("채널이 없습니다");
 		}
@@ -80,7 +75,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			// 먼저 기존의 메시지를 삭제
 			if (channel != null) {
 				System.out.println("메세지 보내기");
-				if(null != msgId) channel.deleteMessageById(msgId);
+				if(null != msgId) channel.deleteMessageById(msgId).queue();
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
 						.build();
