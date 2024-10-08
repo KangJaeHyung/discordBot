@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -130,7 +131,7 @@ public class BirthChannelListener extends ListenerAdapter {
 	        return;
 		}
 		if (event.getComponentId().equals("month_birthday")) {
-			List<UserEntity> users = userRepository.findAll();
+			List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 			List<UserEntity> birthUsers = new ArrayList<>();
 			for(UserEntity user : users) {
 				if(user.getBirthDate() == null) continue;
@@ -146,7 +147,7 @@ public class BirthChannelListener extends ListenerAdapter {
 	        return;
 		}
 		if (event.getComponentId().equals("all_birthday")) {
-			List<UserEntity> users = userRepository.findAll();
+			List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
 			for(UserEntity birthUser : users) {
 				if(birthUser.getBirthDate() == null) continue;

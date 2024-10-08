@@ -5,12 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,16 +21,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.SearchListResponse;
-import com.google.api.services.youtube.model.SearchResult;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
-import loaSSalmuckBot.com.Listener.service.VoiceService;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
-import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import loaSSalmuckBot.com.api.jpa.user.UserEntity;
 import loaSSalmuckBot.com.api.jpa.user.UserRepository;
@@ -127,7 +118,7 @@ public class ScheduleUtil {
 		}
 		
 		//유저 생일자 찾기
-		List<UserEntity> users = userRepository.findAll();
+		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
 		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
 		if(channel == null) return;

@@ -318,7 +318,7 @@ public class CommandListener extends ListenerAdapter {
 		case "생일설정": {
 			
             String memberId = event.getOption("member")==null?event.getMember().getId():event.getOption("member").getAsMember().getId();
-            String date = "2000"+String.valueOf(event.getOption("date").getAsInt());
+            String date = "2000"+event.getOption("date").getAsString();
             Date date2 = null;
           //birthday 를 date로 변환
 			try {
@@ -470,7 +470,7 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
 		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
-		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.INTEGER, "date", "생일 4자리 숫자 ex)0307", true).addOption(OptionType.USER,"member","변경할 유저", false));
+		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.STRING, "date", "생일 4자리 숫자 ex)0307", true).addOption(OptionType.USER,"member","변경할 유저", false));
 		data.add(Commands.slash("생일채널설정", "생일 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
 		data.add(Commands.slash("생일알람채널설정", "생일 알람 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
 		data.add(Commands.slash("생일삭제", "생일 삭제 설정 합니다.").addOption(OptionType.USER,"member","삭제할 유저", true));
