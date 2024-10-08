@@ -143,6 +143,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			int count = 1;
 			for(UserEntity birthUser : birthUsers) {
 				msg += "🎈**"+count+"."+birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				count++;
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
@@ -154,6 +155,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			for(UserEntity birthUser : users) {
 				if(birthUser.getBirthDate() == null) continue;
 				msg += "🎈**"+count +"." +birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				count++;
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
