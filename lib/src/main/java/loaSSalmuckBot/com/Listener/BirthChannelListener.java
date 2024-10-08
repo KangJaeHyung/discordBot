@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,11 @@ public class BirthChannelListener extends ListenerAdapter {
 	private UserRepository userRepository;
 	
 	
+	@PostConstruct
+	public void init() {
+	    System.out.println("빈 초기화됨");
+	}
+	
 	@PreDestroy
 	public void onDestroy() {
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
@@ -76,9 +82,7 @@ public class BirthChannelListener extends ListenerAdapter {
 				System.out.println("메세지 보내기");
 				if(null != msgId) channel.deleteMessageById(msgId);
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
-						.addActionRow(Button.primary("set_birthday", "생일 설정하기"))
-						.addActionRow(Button.secondary("month_birthday", "이번달 생일자 보기"))
-						.addActionRow(Button.secondary("all_birthday", "전체 생일 보기"))
+						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
 						.build();
 
 				channel.sendMessage(message).queue(t -> msgId = t.getId());
@@ -119,7 +123,7 @@ public class BirthChannelListener extends ListenerAdapter {
 	        }
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
 			for(UserEntity birthUser : birthUsers) {
-				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth()+1 +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				msg += "🎈**"+birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
@@ -128,7 +132,7 @@ public class BirthChannelListener extends ListenerAdapter {
 			List<UserEntity> users = userRepository.findAll();
 			String msg = "# **길드원 생일 확인** 🎂 \r\n";
 			for(UserEntity birthUser : users) {
-				msg += "🎈**"+birthUser.getNickName() + "**-" + birthUser.getBirthDate().getMonth()+1 +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
+				msg += "🎈**"+birthUser.getNickName() + "**-" + (birthUser.getBirthDate().getMonth()+1) +"월 "+ birthUser.getBirthDate().getDate() + "일 \r\n";
 			}
 			event.reply(msg).setEphemeral(true).setEphemeral(true).queue();
 	        return;
