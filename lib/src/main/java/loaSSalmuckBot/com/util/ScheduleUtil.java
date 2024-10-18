@@ -134,7 +134,7 @@ public class ScheduleUtil {
         }
 		for(UserEntity birthUser : birthUsers) {
 			guild.getRolesByName("생일", true).get(0);
-			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("생일", true).get(0)).queue();
+			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
 			
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
             
