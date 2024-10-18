@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +39,6 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.requests.restaction.CacheRestAction;
 
 @Component
 public class CommandListener extends ListenerAdapter {
@@ -400,16 +402,34 @@ public class CommandListener extends ListenerAdapter {
 	                    event.getGuild().removeRoleFromMember(member, role).queue();
 	                }
 	            }
+	            
+	            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
 	            // 역할 추가
-	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue(t-> {System.out.println("성공?");});
+	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue();
 	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 	            // 닉네임 변경
 	            member.modifyNickname(nickname).queue( uccess -> {
                     System.out.println("닉네임 변경 성공");
                 }, fail -> {
                 	System.out.println("닉네임 변경 실패");
-                }
-	        )	;
+                })	;
+	            
+	            Runnable retryTask = () -> {
+	                // 역할 다시 추가
+	                event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue();
+	                event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName(userClass, true).get(0)).queue();
+
+	                // 닉네임 다시 변경
+	                member.modifyNickname(nickname).queue(success -> {
+	                    System.out.println("닉네임 변경 재시도 성공");
+	                }, fail -> {
+	                    System.out.println("닉네임 변경 재시도 실패");
+	                });
+	            };
+	            
+	            scheduler.schedule(retryTask, 2, TimeUnit.SECONDS);
+	            
 	            // 데이터베이스 업데이트
 	            discordService.setUser(memberId, name, userClass);
 	            // 메시지 업데이트
