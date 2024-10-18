@@ -390,22 +390,29 @@ public class CommandListener extends ListenerAdapter {
 			String memberId = event.getMessage().getEmbeds().get(0).getFields().get(1).getValue();
 			String userClass = event.getMessage().getEmbeds().get(0).getFields().get(2).getValue();
 			String name = event.getMessage().getEmbeds().get(0).getFields().get(3).getValue();
-			CacheRestAction<Member> MemberCache = event.getGuild().retrieveMemberById(memberId);
-			Member member = MemberCache.complete();
-			List<String> classes = new ArrayList<>();
-			initClass(classes);
-			for(Role role:  member.getRoles()) {
-				if(classes.contains(role.getName())) event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
-			}
-			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
-			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(userClass, true).get(0)).queue();
-			member.modifyNickname(nickname).queue();
-			discordService.setUser(memberId, name, userClass);
-			
-			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
-			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
-            .queue();
-			 event.reply("변경 되었습니다.").queue();
+			// 비동기 방식으로 멤버를 가져옴
+	        event.getGuild().retrieveMemberById(memberId).queue(member -> {
+	            List<String> classes = new ArrayList<>();
+	            initClass(classes);
+	            // 기존 역할 제거
+	            for(Role role: member.getRoles()) {
+	                if(classes.contains(role.getName())) {
+	                    event.getGuild().removeRoleFromMember(member, role).queue();
+	                }
+	            }
+	            // 역할 추가
+	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue();
+	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName(userClass, true).get(0)).queue();
+	            // 닉네임 변경
+	            member.modifyNickname(nickname).queue();
+	            // 데이터베이스 업데이트
+	            discordService.setUser(memberId, name, userClass);
+	            // 메시지 업데이트
+	            event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
+	                .setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
+	                .queue();
+	            event.reply("변경 되었습니다.").queue();
+	        });
 		}else if(event.getComponentId().equals("rejectIntegration")){
 			event.getChannel().editMessageEmbedsById(event.getMessageId(), event.getMessage().getEmbeds().get(0))
 			.setActionRow(Button.success("approveIntegration", "승인").asDisabled(), Button.danger("rejectIntegration", "반려").asDisabled())
