@@ -401,7 +401,7 @@ public class CommandListener extends ListenerAdapter {
 	                }
 	            }
 	            // 역할 추가
-	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue();
+	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue(t-> {System.out.println("성공?");});
 	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 	            // 닉네임 변경
 	            member.modifyNickname(nickname).queue( uccess -> {
