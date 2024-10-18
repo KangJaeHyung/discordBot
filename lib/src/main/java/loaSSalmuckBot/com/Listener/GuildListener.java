@@ -107,12 +107,7 @@ public class GuildListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
-		System.out.println(event.getUser().getAsMention() +"님이 나가셨습니다.");
-		VoiceChannelEntity entity = voiceService.getChannelByGiven(Given.WELCOMECHAN);
-		if (entity == null)
-			return;
-		event.getGuild().getTextChannelById(entity.getChannelId()).sendMessage(event.getUser().getName() + "님 안녕히 가세요.")
-		.queue();
+		System.out.println(event.getUser().getName() +"님이 나가셨습니다.");
 		discordService.removeUser(event.getUser().getId());
 		
 	}
