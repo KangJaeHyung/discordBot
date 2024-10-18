@@ -391,7 +391,7 @@ public class CommandListener extends ListenerAdapter {
 			String userClass = event.getMessage().getEmbeds().get(0).getFields().get(2).getValue();
 			String name = event.getMessage().getEmbeds().get(0).getFields().get(3).getValue();
 			// 비동기 방식으로 멤버를 가져옴
-	        event.getGuild().retrieveMemberById(memberId).queue(member -> {
+	        event.getGuild().retrieveMemberById(memberId).useCache(false).queue(member -> {
 	            List<String> classes = new ArrayList<>();
 	            initClass(classes);
 	            // 기존 역할 제거
@@ -404,7 +404,12 @@ public class CommandListener extends ListenerAdapter {
 	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName("길드원", true).get(0)).queue();
 	            event.getGuild().addRoleToMember(member, event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 	            // 닉네임 변경
-	            member.modifyNickname(nickname).queue();
+	            member.modifyNickname(nickname).queue( uccess -> {
+                    System.out.println("닉네임 변경 성공");
+                }, fail -> {
+                	System.out.println("닉네임 변경 실패");
+                }
+	        )	;
 	            // 데이터베이스 업데이트
 	            discordService.setUser(memberId, name, userClass);
 	            // 메시지 업데이트
