@@ -108,6 +108,7 @@ public class ScheduleUtil {
 				user.setNickName(profile.getCharacterName());
 				user.setUserClass(profile.getCharacterClassName());
 				userRepository.save(user);
+				guild.removeRoleFromMember(member,  guild.getRolesByName("생일", true).get(0)).queue();
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
 				member.modifyNickname(afterNick).queue();
 			} catch (Exception e) {
@@ -132,6 +133,9 @@ public class ScheduleUtil {
             }
         }
 		for(UserEntity birthUser : birthUsers) {
+			guild.getRolesByName("생일", true).get(0);
+			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("생일", true).get(0)).queue();
+			
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
             
 		}

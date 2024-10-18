@@ -24,14 +24,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
-import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -400,6 +398,7 @@ public class CommandListener extends ListenerAdapter {
 				if(classes.contains(role.getName())) event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
 			}
 			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName("길드원", true).get(0)).queue();
+			event.getGuild().addRoleToMember(member,event.getGuild().getRolesByName(userClass, true).get(0)).queue();
 			member.modifyNickname(nickname).queue();
 			discordService.setUser(memberId, name, userClass);
 			
