@@ -30,7 +30,7 @@ public class TestController {
 	
 	@GetMapping()
 	public String init() {
-		scheduleUtil.checkUserInfo();
+		scheduleUtil.test();
 		return "success";
 	}
 
