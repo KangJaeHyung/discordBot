@@ -73,11 +73,13 @@ public class ScheduleUtil {
 			channel.deleteMessageById(id).queue();
 		}
 		msgIds.clear();
+		
 		for(UserEntity user : users) {
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
             }
         }
+		System.out.println(birthUsers);
 		for(UserEntity birthUser : birthUsers) {
 			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
 			
@@ -168,5 +170,5 @@ public class ScheduleUtil {
 	
 	
 	static private List<String> msgIds = new ArrayList<>();
-	//기본 공격력 = (스탯*무공/6)^(1/2)
+
 }
