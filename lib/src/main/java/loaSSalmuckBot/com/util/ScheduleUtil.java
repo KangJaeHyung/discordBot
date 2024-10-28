@@ -163,15 +163,16 @@ public class ScheduleUtil {
 		}
 		msgIds.clear();
 		for(UserEntity user : users) {
+			if(user.getBirthDate()==null) continue;
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
             }
         }
 		for(UserEntity birthUser : birthUsers) {
-			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRoleById(birthRole)).queue();
-			
-            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
-            
+			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
+				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
+				channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
+			});
 		}
             
 	}
