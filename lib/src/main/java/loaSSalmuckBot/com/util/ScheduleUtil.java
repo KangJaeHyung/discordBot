@@ -80,7 +80,7 @@ public class ScheduleUtil {
 			channel.deleteMessageById(id).queue();
 		}
 		msgIds.clear();
-		
+		System.out.println("22222222222222222222222");
 		for(UserEntity user : users) {
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
@@ -155,7 +155,7 @@ public class ScheduleUtil {
 		//유저 생일자 찾기
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
-		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
+		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getChannelId());
 		if(channel == null) return;
 		for(String id :msgIds) {
 			channel.deleteMessageById(id).queue();
