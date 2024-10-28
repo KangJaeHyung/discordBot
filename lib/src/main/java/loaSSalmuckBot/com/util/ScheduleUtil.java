@@ -87,11 +87,12 @@ public class ScheduleUtil {
             }
         }
 		System.out.println(birthUsers);
-		for(UserEntity birthUser : birthUsers) {
-			guild.addRoleToMember(guild.getMemberCache().getElementById(birthUser.getUserId()), guild.getRoleById(birthRole)).queue();
-			
-            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
-            
+		for (UserEntity birthUser : birthUsers) {
+			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
+				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
+				channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
+			});
+
 		}
 	}
 	
