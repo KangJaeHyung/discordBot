@@ -62,6 +62,7 @@ public class ScheduleUtil {
 	private static final String subGuildMaster = "832801296645488651";
 	private static final String guildManager = "832801297865506826";
 	private static final String guildMamber = "995938730286264460";
+	private static final String birthRole = "1293844791364292608";
 	
 	
 	public void test() {
@@ -89,7 +90,7 @@ public class ScheduleUtil {
         }
 		System.out.println(birthUsers);
 		for(UserEntity birthUser : birthUsers) {
-			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
+			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRoleById(birthRole)).queue();
 			
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
             
@@ -143,7 +144,7 @@ public class ScheduleUtil {
 				user.setNickName(profile.getCharacterName());
 				user.setUserClass(profile.getCharacterClassName());
 				userRepository.save(user);
-				guild.removeRoleFromMember(member,  guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
+				guild.removeRoleFromMember(member,  guild.getRoleById(birthRole)).queue();
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
 				member.modifyNickname(afterNick).queue();
 			} catch (Exception e) {
@@ -168,7 +169,7 @@ public class ScheduleUtil {
             }
         }
 		for(UserEntity birthUser : birthUsers) {
-			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
+			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRoleById(birthRole)).queue();
 			
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
             
