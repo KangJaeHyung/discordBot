@@ -69,8 +69,8 @@ public class ScheduleUtil {
 		Guild guild = jda.getGuildById(voice.getId());
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
-		
-		TextChannel channel = jda.getGuildById(voice.getId()).getTextChannelById(voice.getChannelId());
+		System.out.println(voice);
+		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voice.getChannelId());
 		
 		
 		if(channel == null) return;
