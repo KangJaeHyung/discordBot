@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
+import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import loaSSalmuckBot.com.api.jpa.user.UserEntity;
 import loaSSalmuckBot.com.api.jpa.user.UserRepository;
@@ -64,10 +65,12 @@ public class ScheduleUtil {
 	
 	
 	public void test() {
-		Guild guild = jda.getGuildById(oddGuild);
+		VoiceChannelEntity voice =  voiceChannelRepository.findByGiven(Given.BIRTHCHAN2);
+		Guild guild = jda.getGuildById(voice.getId());
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
-		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
+		
+		TextChannel channel = jda.getGuildById(voice.getId()).getTextChannelById(voice.getChannelId());
 		
 		
 		if(channel == null) return;
