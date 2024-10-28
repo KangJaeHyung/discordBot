@@ -88,7 +88,7 @@ public class ScheduleUtil {
         }
 		System.out.println(birthUsers);
 		for(UserEntity birthUser : birthUsers) {
-			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRoleById(birthRole)).queue();
+			guild.addRoleToMember(guild.getMemberCache().getElementById(birthUser.getUserId()), guild.getRoleById(birthRole)).queue();
 			
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
             
