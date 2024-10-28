@@ -68,7 +68,11 @@ public class ScheduleUtil {
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
 		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
+		
+		
 		if(channel == null) return;
+		
+		System.out.println("11111111111111111111111");
 		for(String id :msgIds) {
 			channel.deleteMessageById(id).queue();
 		}
