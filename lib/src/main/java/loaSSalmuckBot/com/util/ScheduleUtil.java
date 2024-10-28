@@ -67,7 +67,7 @@ public class ScheduleUtil {
 	
 	public void test() {
 		VoiceChannelEntity voice =  voiceChannelRepository.findByGiven(Given.BIRTHCHAN2);
-		Guild guild = jda.getGuildById(voice.getId());
+		Guild guild = jda.getGuildCache().getElementById(oddGuild);
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
 		System.out.println(voice);
@@ -76,12 +76,10 @@ public class ScheduleUtil {
 		
 		if(channel == null) return;
 		
-		System.out.println("11111111111111111111111");
 		for(String id :msgIds) {
 			channel.deleteMessageById(id).queue();
 		}
 		msgIds.clear();
-		System.out.println("22222222222222222222222");
 		for(UserEntity user : users) {
 			if(user.getBirthDate()==null) continue;
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
