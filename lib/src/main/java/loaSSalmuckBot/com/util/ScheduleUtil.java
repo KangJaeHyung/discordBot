@@ -61,6 +61,31 @@ public class ScheduleUtil {
 	private static final String subGuildMaster = "832801296645488651";
 	private static final String guildManager = "832801297865506826";
 	private static final String guildMamber = "995938730286264460";
+	
+	
+	public void test() {
+		Guild guild = jda.getGuildById(oddGuild);
+		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
+		List<UserEntity> birthUsers = new ArrayList<>();
+		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getId());
+		if(channel == null) return;
+		for(String id :msgIds) {
+			channel.deleteMessageById(id).queue();
+		}
+		msgIds.clear();
+		for(UserEntity user : users) {
+            if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
+                birthUsers.add(user);
+            }
+        }
+		for(UserEntity birthUser : birthUsers) {
+			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
+			
+            channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
+            
+		}
+	}
+	
 
 	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
 	public void checkUserInfo() {
@@ -108,7 +133,7 @@ public class ScheduleUtil {
 				user.setNickName(profile.getCharacterName());
 				user.setUserClass(profile.getCharacterClassName());
 				userRepository.save(user);
-				guild.removeRoleFromMember(member,  guild.getRolesByName("생일", true).get(0)).queue();
+				guild.removeRoleFromMember(member,  guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
 				String afterNick = profile.getCharacterName()+"/"+profile.getCharacterClassName()+"/"+(int)Math.floor(Float.parseFloat(profile.getItemMaxLevel().replace(",","")));	
 				member.modifyNickname(afterNick).queue();
 			} catch (Exception e) {
@@ -133,7 +158,6 @@ public class ScheduleUtil {
             }
         }
 		for(UserEntity birthUser : birthUsers) {
-			guild.getRolesByName("생일", true).get(0);
 			guild.addRoleToMember(guild.getMemberById(birthUser.getUserId()), guild.getRolesByName("🎂Happy Birthday🎂", true).get(0)).queue();
 			
             channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!").queue(t -> msgIds.add(t.getId()));
