@@ -82,7 +82,7 @@ public class ScheduleUtil {
 		msgIds.clear();
 		System.out.println("22222222222222222222222");
 		for(UserEntity user : users) {
-			System.out.println("why??" + user.getNickName());
+			if(user.getBirthDate()==null) continue;
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
             }
