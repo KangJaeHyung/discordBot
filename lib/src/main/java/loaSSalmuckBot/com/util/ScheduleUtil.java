@@ -90,7 +90,7 @@ public class ScheduleUtil {
 		for (UserEntity birthUser : birthUsers) {
 			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
 				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
-				channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!\\r\\n"+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+				channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
 			});
 
 		}
