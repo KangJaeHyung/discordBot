@@ -58,11 +58,11 @@ public class ScheduleUtil {
 
 
 
-	private static final String oddGuild = "832794285178355714";
-	private static final String subGuildMaster = "832801296645488651";
-	private static final String guildManager = "832801297865506826";
-	private static final String guildMamber = "995938730286264460";
-	private static final String birthRole = "1293844791364292608";
+	private static  String oddGuild = "832794285178355714";
+	private static  String subGuildMaster = "832801295336341516";
+	private static  String guildManager = "1296373081148751973";
+	private static  String guildMember = "995938730286264460";
+	private static  String birthRole = "1293844791364292608";
 	
 	
 	public void test() {
@@ -104,9 +104,13 @@ public class ScheduleUtil {
 //		roles.add(jda.getGuildById(oddGuild).getRoleById(subGuildMaster));
 //		roles.add();
 		Guild guild = jda.getGuildById(oddGuild);
-		Task<List<Member>> guildMembers = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRolesByName("길드원", true).get(0));
-		Task<List<Member>> guildManagers = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRoleById(guildManager));
-		Task<List<Member>> subMaster = guild.findMembersWithRoles(jda.getGuildById(oddGuild).getRoleById(subGuildMaster));
+		Role managerRole = jda.getGuildById(oddGuild).getRoleById(guildManager)==null?jda.getGuildById(oddGuild).getRolesByName("길드장", true).get(0):jda.getGuildById(oddGuild).getRoleById(guildManager);
+		Role memberRole = jda.getGuildById(oddGuild).getRoleById(guildMember)==null?jda.getGuildById(oddGuild).getRolesByName("길드원", true).get(0):jda.getGuildById(oddGuild).getRoleById(guildMember);
+		Role sumMaster = jda.getGuildById(oddGuild).getRoleById(subGuildMaster)==null?jda.getGuildById(oddGuild).getRolesByName("부길드장", true).get(0):jda.getGuildById(oddGuild).getRoleById(subGuildMaster);
+		
+		Task<List<Member>> guildMembers = guild.findMembersWithRoles(memberRole);
+		Task<List<Member>> guildManagers = guild.findMembersWithRoles(managerRole);
+		Task<List<Member>> subMaster = guild.findMembersWithRoles(sumMaster);
 		List<Member> members = new ArrayList<>();
 		members.addAll(guildMembers.get());
 		members.addAll(guildManagers.get());
