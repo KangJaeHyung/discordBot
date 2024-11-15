@@ -172,8 +172,8 @@ public class LoaRestAPI {
 	    HashMap<String, Object> profile=null;
 	    try {
 	    	ResponseEntity<String> response = restTemplate.exchange(uri.toUri(), HttpMethod.POST, entity, String.class);
+	    	System.out.println(response.getBody());
 	    	profile =mapper.readValue(response.getBody(), HashMap.class);
-	    	
 	    	return  ((List<HashMap<String, HashMap<String, Object>>>) profile.get("choices")).get(0).get("message").get("content").toString();
 		} catch (Exception e) {
 			e.printStackTrace();
