@@ -173,8 +173,11 @@ public class LoaRestAPI {
 	    try {
 	    	ResponseEntity<String> response = restTemplate.exchange(uri.toUri(), HttpMethod.POST, entity, String.class);
 	    	profile =mapper.readValue(response.getBody(), HashMap.class);
+	    	System.out.println("#######################"+profile);
 	    	List<HashMap<String,Object>> choices= (List<HashMap<String, Object>>) profile.get("choices");
+	    	System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@"+choices);
 	    	HashMap<String,Object> message=  (HashMap<String, Object>) choices.get(0).get("message");
+	    	System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$"+message);
 	    	return message.get("content").toString();
 	
 		} catch (Exception e) {
