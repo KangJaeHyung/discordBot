@@ -216,22 +216,6 @@ public class CommandListener extends ListenerAdapter {
 			this.auction(event);
 			break;
 		}
-		case "대화": {
-			try {
-				event.reply("AI가 채팅을 치는 중 입니다...").queue();
-				String chat = event.getOption("chat").getAsString();
-				CompletableFuture<String> dap = api.getChatGpt(chat,discordService.getBeforeUserChat(event.getMember().getId()));
-				dap.thenAccept(response -> {
-					event.getHook().editOriginal(event.getMember().getAsMention()+": "+chat +System.getProperty("line.separator")+System.getProperty("line.separator")+response).queue();
-					discordService.saveUserChat(event.getMember().getId(), chat,response);
-		        });
-				break;
-//				event.editMessage(dap).queue();
-			} catch (Exception e) {
-				e.printStackTrace();
-				break;
-			}	
-		}
 		case "연동": {
 			try {
 				event.reply("연동중 입니다...").queue();
@@ -294,26 +278,6 @@ public class CommandListener extends ListenerAdapter {
 			event.reply(member.getAsMention() +"의 생일을 삭제 하였습니다.").queue();
 			break;
 			
-		}
-		case "엘릭서": {
-			try {
-				event.reply("잠시만 기다려주세요...").queue();
-				String user = event.getOption("user").getAsString();
-				CompletableFuture<MessageEmbed> dap = api.getElixir(user);
-				dap.thenAccept(response -> {
-					if(response ==null){
-						event.getHook().editOriginal("검색중 문제가 생겼습니다. 닉네임을 한번 확인해 주세요.").queue();
-						return;
-					}
-					event.getHook().editOriginalEmbeds(response).setContent("").queue();
-//					discordService.saveUserChat(event.getMember().getId(), chat,response);
-		        });
-				break;
-//				event.editMessage(dap).queue();
-			} catch (Exception e) {
-				e.printStackTrace();
-				break;
-			}	
 		}
 		case "생일설정": {
 			
@@ -485,7 +449,6 @@ public class CommandListener extends ListenerAdapter {
 				.addChoice("일리아칸", "illiakan")
 				.addChoice("상아탑", "tower")
 				));
-		data.add(Commands.slash("대화", "AI와 대화를 할 수 있습니다.").addOption(OptionType.STRING, "chat", "채팅", true));
 //		data.add(Commands.slash("공지채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("신입채널설정", "신입 채널을 이벤트를 부여 합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("유튜브채널설정", "유튜브 알람 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));
@@ -499,7 +462,6 @@ public class CommandListener extends ListenerAdapter {
 				.addOption(OptionType.CHANNEL, "channel", "채널이름", true));
 		data.add(Commands.slash("연동", "현재 디스코드 닉네임을 로스트아크api와 연동하여 닉네임을 변경합니다.").addOption(OptionType.STRING, "user", "유저", true).addOption(OptionType.USER, "member", "변경할 유저", false));
 		data.add(Commands.slash("게스트", "해당 맴버를 게스트 설정을 합니다.").addOption(OptionType.USER, "member", "변경할 유저", true));
-		data.add(Commands.slash("엘릭서", "엘릭서 증가 수치를 보여줍니다").addOption(OptionType.STRING, "user", "유저", true));
 		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
 		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.STRING, "date", "생일 4자리 숫자 ex)0307", true).addOption(OptionType.USER,"member","변경할 유저", false));
 		data.add(Commands.slash("생일채널설정", "생일 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	

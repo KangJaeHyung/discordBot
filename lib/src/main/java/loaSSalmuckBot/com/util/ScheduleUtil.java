@@ -57,6 +57,8 @@ public class ScheduleUtil {
 	private String loaApiKey;
 
 
+	@Autowired
+	private LoaRestAPI loaRestAPI;
 
 	private static  String oddGuild = "832794285178355714";
 	private static  String subGuildMaster = "832801295336341516";
@@ -90,7 +92,12 @@ public class ScheduleUtil {
 		for (UserEntity birthUser : birthUsers) {
 			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
 				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
-				channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+				try {
+					channel.sendMessage(loaRestAPI.getChatGpt(birthUser.getNickName())+System.lineSeparator()+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+				}
 			});
 
 		}
@@ -175,7 +182,15 @@ public class ScheduleUtil {
 		for(UserEntity birthUser : birthUsers) {
 			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
 				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
-				channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!\\r\\n"+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+				try {
+					channel.sendMessage(loaRestAPI.getChatGpt(birthUser.getNickName())+System.lineSeparator()+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+					channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+				}
+				
+				
 			});
 		}
             
