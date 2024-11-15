@@ -93,7 +93,7 @@ public class ScheduleUtil {
 			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
 				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
 				try {
-					channel.sendMessage(loaRestAPI.getChatGpt(birthUser.getNickName())).queue(t -> msgIds.add(t.getId()));
+					channel.sendMessage(loaRestAPI.getChatGpt(birthUser.getNickName())+System.lineSeparator()+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
