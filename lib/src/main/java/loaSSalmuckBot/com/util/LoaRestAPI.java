@@ -129,7 +129,6 @@ public class LoaRestAPI {
 	@Value("${gpt.url}")
 	private String gptUrl;
 	
-	@Async
 	public String getChatGpt(String nick) throws Exception {
 	    // 1. RestTemplate 객체 생성
 	    RestTemplateBuilder builder = new RestTemplateBuilder();
