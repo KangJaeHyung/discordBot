@@ -534,8 +534,10 @@ public class CommandListener extends ListenerAdapter {
 		List<Role> list =  event.getMember().getRoles();
 		boolean isRole= false;
 		for(Role role:list) {
-			if(role.getId().equals("832801295336341516")||role.getId().equals("832801296645488651")||role.getId().equals("832801297865506826")||role.getId().equals("1082520090009927741")){
-				isRole=true;
+			if (role.getId().equals("832801295336341516") || role.getId().equals("1293063948681216060")
+					|| role.getId().equals("1296373081148751973") || role.getId().equals("1296396814957678612")
+					|| role.getId().equals("1296396872361050152") || role.getId().equals("1296396862764351488")) {
+				isRole = true;
 				break;
 			}
 		}

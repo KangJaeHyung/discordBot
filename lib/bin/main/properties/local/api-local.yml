@@ -46,7 +46,7 @@ discord:
   
 gpt:
   url: https://api.openai.com/v1/chat/completions
-  auth: ENC(jUlyq5orvXq8LVFIx6OJyaSv5iwNGFjdVHREYs9m0VEm4rpvC2Bjno1VEsB4m16i1sa4GCpZY6d7MCERWaLXMw==)
+  auth: ENC(MgnQGztAHVcEQTJ2+uYDe+gVY5bliMWopQq45UPv4ZNhaoro8GSH/DMjnlppNLzML9M+l2YsrWMCM18Wn8zypzo+Vcmy7SbPSNz3xbofpbkoNHhcg0WDn/+xiTfhnbVg/DLa0ORVdgHoXK7ZKLTtDu+3mctc8jKvCJCvpwyxnAmEWlHKKtxdKqvXyx5EUQ9hZOYmW9j70SLpFrsDvo5q+HzAJHBFkU3iJ8CuknjcQos=)
   
 google:
   apiKey: ENC(nZMt55wJ/MEDBzGjJPPrhWRudZrvUjYfqEQPh83jYQwvygPNjYxy6P6hdGadGyFA)
