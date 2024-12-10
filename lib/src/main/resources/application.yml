@@ -27,7 +27,7 @@ server:
       enabled: true
       force: true
   shutdown: graceful
-  port: 9111
+  port: 9158
   
 
 jasypt:
