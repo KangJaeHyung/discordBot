@@ -20,6 +20,8 @@ public class LoaSSalmuckBotApplication {
 			System.setProperty("spring.profiles.active", "local");
 		String profile = "local";
 
+		System.out.println("spring.profiles.active : " + profile);
+		System.out.println("why????");
 		new SpringApplicationBuilder(LoaSSalmuckBotApplication.class)
 				.properties("spring.config.location=classpath:/properties/" + profile + "/api-" + profile + ".yml"
 						+ ", classpath:/properties/" + profile + "/db-" + profile + ".yml"
