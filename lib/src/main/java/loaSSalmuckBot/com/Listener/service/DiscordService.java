@@ -48,9 +48,6 @@ public class DiscordService {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private JDA jda;
-	
 	public void setBirthday(String memberId, Date date) {
 				
 		UserEntity userEntity = userRepository.findById(memberId).orElse(new UserEntity());
