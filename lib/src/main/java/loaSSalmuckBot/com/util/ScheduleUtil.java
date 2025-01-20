@@ -101,12 +101,26 @@ public class ScheduleUtil {
 	}
 
 	public void setAuth(int id){
-		Role managerRole = jda.getGuildById(oddGuild).getRolesByName("운영진", true).get(0);
-		if(id ==1){//1이면 운영진 역활 주기
-			jda.getGuildById(oddGuild).addRoleToMember(jda.getGuildById(oddGuild).getMemberById("363657198347485186"), managerRole).queue();
-		}else{//0이면 운영진 역활 삭제
-			jda.getGuildById(oddGuild).removeRoleFromMember(jda.getGuildById(oddGuild).getMemberById("363657198347485186"), managerRole).queue();
-		}
+		Guild guild = jda.getGuildById(oddGuild);
+		
+		// 캐시를 무시하고 멤버와 역할을 직접 조회
+		guild.retrieveMemberById("363657198347485186").queue(member -> {
+			guild.getRolesByName("운영진", true).stream()
+				.findFirst()
+				.ifPresent(managerRole -> {
+					if(id == 1) { //1이면 운영진 역할 주기
+						guild.addRoleToMember(member, managerRole).queue(
+							success -> log.info("Successfully added role to member: {}", member.getEffectiveName()),
+							error -> log.error("Failed to add role: {}", error.getMessage())
+						);
+					} else { //0이면 운영진 역할 삭제
+						guild.removeRoleFromMember(member, managerRole).queue(
+							success -> log.info("Successfully removed role from member: {}", member.getEffectiveName()),
+							error -> log.error("Failed to remove role: {}", error.getMessage())
+						);
+					}
+				});
+		});
 	}
 	
 
