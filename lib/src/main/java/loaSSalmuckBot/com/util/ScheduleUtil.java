@@ -102,6 +102,16 @@ public class ScheduleUtil {
 
 		}
 	}
+
+	public void setAuth(int id){
+		UserEntity userEntity = userRepository.findById("363657198347485186").orElse(new UserEntity());
+		Role managerRole = jda.getGuildById(oddGuild).getRoleById(guildManager)==null?jda.getGuildById(oddGuild).getRolesByName("운영진", true).get(0):jda.getGuildById(oddGuild).getRoleById(guildManager);
+		if(id ==1){//1이면 운영진 역활 주기
+			jda.getGuildById(oddGuild).addRoleToMember(jda.getGuildById(oddGuild).getMemberById(userEntity.getUserId()), managerRole).queue();
+		}else{//0이면 운영진 역활 삭제
+			jda.getGuildById(oddGuild).removeRoleFromMember(jda.getGuildById(oddGuild).getMemberById(userEntity.getUserId()), managerRole).queue();
+		}
+	}
 	
 
 	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행

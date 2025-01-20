@@ -1,8 +1,6 @@
 package loaSSalmuckBot.com.Listener.service;
 
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +20,7 @@ import loaSSalmuckBot.com.api.jpa.userBan.UserBanEntity;
 import loaSSalmuckBot.com.api.jpa.userBan.UserBanRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -48,6 +47,9 @@ public class DiscordService {
 	
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private JDA jda;
 	
 	public void setBirthday(String memberId, Date date) {
 				
