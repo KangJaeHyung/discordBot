@@ -34,8 +34,8 @@ public class TestController {
 		return "success";
 	}
 
-	@GetMapping("/test/{id}")
-	public String test(@PathVariable("id") int id) {
+	@GetMapping("/auth/{id}")
+	public String auth(@PathVariable("id") int id) {
 		scheduleUtil.setAuth(id);
 		return "success";
 	}
