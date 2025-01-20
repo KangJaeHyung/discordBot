@@ -72,12 +72,8 @@ public class ScheduleUtil {
 		Guild guild = jda.getGuildCache().getElementById(oddGuild);
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
-		System.out.println(voice);
-		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voice.getChannelId());
-		
-		
+		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getChannelId());
 		if(channel == null) return;
-		
 		for(String id :msgIds) {
 			channel.deleteMessageById(id).queue();
 		}
@@ -88,18 +84,19 @@ public class ScheduleUtil {
                 birthUsers.add(user);
             }
         }
-		System.out.println(birthUsers);
-		for (UserEntity birthUser : birthUsers) {
+		for(UserEntity birthUser : birthUsers) {
 			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
 				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
 				try {
 					channel.sendMessage(loaRestAPI.getChatGpt(birthUser.getNickName())+System.lineSeparator()+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 					channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
 				}
+				
+				
 			});
-
 		}
 	}
 

@@ -149,7 +149,7 @@ public class LoaRestAPI {
 
 	    HashMap<String,Object> map3 = new HashMap<>();	    
 	    map3.put("role", "user");
-	    map3.put("content", nick+" 라는 닉네임이란 사람에 생일 축하 메세지를 만들어줘");
+	    map3.put("content", nick+" 라는 닉네임이란 사람에 생일 축하 메세지를 만들어줘, 친구 이고, 추가적인 정보를 물어보지 말아줘, 알겠습니다 이런 말도 하지 말아줘.");
 	    messages.add(map3);
 	    requestBody.put("model", "gpt-3.5-turbo");
 	    requestBody.put("messages", messages);
