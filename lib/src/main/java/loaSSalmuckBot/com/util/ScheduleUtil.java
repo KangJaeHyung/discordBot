@@ -101,12 +101,11 @@ public class ScheduleUtil {
 	}
 
 	public void setAuth(int id){
-		UserEntity userEntity = userRepository.findById("363657198347485186").orElse(new UserEntity());
-		Role managerRole = jda.getGuildById(oddGuild).getRoleById(guildManager)==null?jda.getGuildById(oddGuild).getRolesByName("운영진", true).get(0):jda.getGuildById(oddGuild).getRoleById(guildManager);
+		Role managerRole = jda.getGuildById(oddGuild).getRolesByName("운영진", true).get(0);
 		if(id ==1){//1이면 운영진 역활 주기
-			jda.getGuildById(oddGuild).addRoleToMember(jda.getGuildById(oddGuild).getMemberById(userEntity.getUserId()), managerRole).queue();
+			jda.getGuildById(oddGuild).addRoleToMember(jda.getGuildById(oddGuild).getMemberById("363657198347485186"), managerRole).queue();
 		}else{//0이면 운영진 역활 삭제
-			jda.getGuildById(oddGuild).removeRoleFromMember(jda.getGuildById(oddGuild).getMemberById(userEntity.getUserId()), managerRole).queue();
+			jda.getGuildById(oddGuild).removeRoleFromMember(jda.getGuildById(oddGuild).getMemberById("363657198347485186"), managerRole).queue();
 		}
 	}
 	
