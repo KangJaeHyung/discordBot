@@ -68,34 +68,64 @@ public class ScheduleUtil {
 	
 	
 	public void test() {
-		VoiceChannelEntity voice =  voiceChannelRepository.findByGiven(Given.BIRTHCHAN2);
-		Guild guild = jda.getGuildCache().getElementById(oddGuild);
+		VoiceChannelEntity voice = voiceChannelRepository.findByGiven(Given.BIRTHCHAN2);
+		Guild guild = jda.getGuildById(oddGuild); // 캐시된 버전 대신 직접 조회
+		
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
-		TextChannel channel = jda.getGuildById(oddGuild).getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getChannelId());
+		TextChannel channel = guild.getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getChannelId());
+		log.info("users : {}", users);
+		
 		if(channel == null) return;
-		for(String id :msgIds) {
-			channel.deleteMessageById(id).queue();
+		
+		// 이전 메시지 삭제
+		for(String id : msgIds) {
+			channel.deleteMessageById(id).queue(
+				success -> log.info("Successfully deleted message: {}", id),
+				error -> log.error("Failed to delete message: {} - {}", id, error.getMessage())
+			);
 		}
 		msgIds.clear();
+		
+		// 생일인 유저 필터링
 		for(UserEntity user : users) {
-			if(user.getBirthDate()==null) continue;
-            if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
-                birthUsers.add(user);
-            }
-        }
+			if(user.getBirthDate() == null) continue;
+			if(user.getBirthDate().getMonth() == new Date().getMonth() && 
+			   user.getBirthDate().getDate() == new Date().getDate()) {
+				birthUsers.add(user);
+			}
+		}
+		
+		// 생일인 유저들 처리
 		for(UserEntity birthUser : birthUsers) {
-			guild.retrieveMemberById(birthUser.getUserId()).useCache(false).queue(member -> {
-				guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue();
-				try {
-					channel.sendMessage(loaRestAPI.getChatGpt(birthUser.getNickName())+System.lineSeparator()+member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+			// 캐시를 무시하고 멤버 조회
+			guild.retrieveMemberById(birthUser.getUserId()).queue(member -> {
+				if(member != null) {
+					// 생일 역할 추가
+					guild.addRoleToMember(member, guild.getRoleById(birthRole)).queue(
+						success -> log.info("Successfully added birth role to: {}", member.getEffectiveName()),
+						error -> log.error("Failed to add birth role: {}", error.getMessage())
+					);
 					
-				} catch (Exception e) {
-					e.printStackTrace();
-					channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!"+ System.lineSeparator() +member.getAsMention()).queue(t -> msgIds.add(t.getId()));
+					// 생일 메시지 전송
+					try {
+						String birthdayMessage = loaRestAPI.getChatGpt(birthUser.getNickName());
+						channel.sendMessage(birthdayMessage + System.lineSeparator() + member.getAsMention())
+							.queue(message -> {
+								msgIds.add(message.getId());
+								log.info("Successfully sent birthday message for: {}", member.getEffectiveName());
+							});
+					} catch (Exception e) {
+						log.error("Failed to send ChatGPT birthday message for: {} - {}", 
+							member.getEffectiveName(), e.getMessage());
+						// 폴백 메시지 전송
+						channel.sendMessage("오늘은 " + birthUser.getNickName() + "님의 생일입니다!" + 
+							System.lineSeparator() + member.getAsMention())
+							.queue(message -> msgIds.add(message.getId()));
+					}
+				} else {
+					log.warn("Could not find member for user: {}", birthUser.getNickName());
 				}
-				
-				
 			});
 		}
 	}
