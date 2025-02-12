@@ -1,14 +1,11 @@
 package loaSSalmuckBot.com.Listener;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.time.ZoneOffset;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -17,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.Listener.service.DiscordService;
+import loaSSalmuckBot.com.api.jpa.channel.MsgIdTableEntity;
+import loaSSalmuckBot.com.api.jpa.channel.MsgIdTableRepository;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import loaSSalmuckBot.com.api.jpa.user.UserEntity;
@@ -51,27 +50,19 @@ public class BirthChannelListener extends ListenerAdapter {
 	
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private MsgIdTableRepository msgIdTableRepository;
 	
 	
-	@PreDestroy
-	public void onDestroy() {
-		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
-		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
-		System.out.println("메세지 삭제");
-		if (channel != null) {
-			if (null != msgId)
-				channel.deleteMessageById(msgId).queue();
-		} else {
-			System.out.println("채널이 없습니다");
-		}
-	}
 	
 	@Scheduled(fixedDelay = 600000 )//10분마다
 	public void resetMsg() {
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
 		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
-		if (channel != null) {
-			if (null != msgId) channel.deleteMessageById(msgId).queue();
+		if (channel != null||msgId!=null) {
+			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findByChannelId(entity.getChannelId());
+			if (null != msgIdTableEntity) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
 			MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 					.addActionRow(Button.primary("set_birthday", "생일 설정하기"),
 							Button.secondary("month_birthday", "이번달 생일자 보기"),
@@ -79,6 +70,10 @@ public class BirthChannelListener extends ListenerAdapter {
 					.build();
 
 			channel.sendMessage(message).queue(t -> msgId = t.getId());
+			MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
+			msgIdTableEntity2.setChannelId(entity.getChannelId());
+			msgIdTableEntity.setMsgId(msgId);
+			msgIdTableRepository.save(msgIdTableEntity);
 		} else {
 			System.out.println("채널이 없습니다");
 		}
@@ -103,12 +98,17 @@ public class BirthChannelListener extends ListenerAdapter {
 						msgId = message.getId();
 					}
 				});
-				if(null != msgId) channel.deleteMessageById(msgId).queue();
+				MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findByChannelId(entity.getChannelId());
+				if (null != msgIdTableEntity||msgId!=null) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
 						.build();
 
 				channel.sendMessage(message).queue(t -> msgId = t.getId());
+				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
+				msgIdTableEntity2.setChannelId(entity.getChannelId());
+				msgIdTableEntity2.setMsgId(msgId);
+				msgIdTableRepository.save(msgIdTableEntity2);
 			} else {
 				System.out.println("채널이 없습니다");
 			}
