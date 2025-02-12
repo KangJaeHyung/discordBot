@@ -62,7 +62,11 @@ public class BirthChannelListener extends ListenerAdapter {
 		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
 		if (channel != null) {
 			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
-			if (null != msgIdTableEntity || msgId!=null) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+			if (msgIdTableEntity != null) {
+				channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+			} else if (msgId != null) {
+				channel.deleteMessageById(msgId).queue();
+			}
 			MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 					.addActionRow(Button.primary("set_birthday", "생일 설정하기"),
 							Button.secondary("month_birthday", "이번달 생일자 보기"),
@@ -72,8 +76,8 @@ public class BirthChannelListener extends ListenerAdapter {
 			channel.sendMessage(message).queue(t -> msgId = t.getId());
 			MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
 			msgIdTableEntity2.setChannelId(entity.getChannelId());
-			msgIdTableEntity.setMsgId(msgId);
-			msgIdTableRepository.save(msgIdTableEntity);
+			msgIdTableEntity2.setMsgId(msgId);
+			msgIdTableRepository.save(msgIdTableEntity2);
 		} else {
 			System.out.println("채널이 없습니다");
 		}
@@ -99,7 +103,11 @@ public class BirthChannelListener extends ListenerAdapter {
 					}
 				});
 				MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
-				if (null != msgIdTableEntity||msgId!=null) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+				if (msgIdTableEntity != null) {
+					channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+				} else if (msgId != null) {
+					channel.deleteMessageById(msgId).queue();
+				}
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
 						.build();
