@@ -60,9 +60,9 @@ public class BirthChannelListener extends ListenerAdapter {
 	public void resetMsg() {
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
 		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
-		if (channel != null||msgId!=null) {
-			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findByChannelId(entity.getChannelId());
-			if (null != msgIdTableEntity) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+		if (channel != null) {
+			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
+			if (null != msgIdTableEntity || msgId!=null) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
 			MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 					.addActionRow(Button.primary("set_birthday", "생일 설정하기"),
 							Button.secondary("month_birthday", "이번달 생일자 보기"),
@@ -98,7 +98,7 @@ public class BirthChannelListener extends ListenerAdapter {
 						msgId = message.getId();
 					}
 				});
-				MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findByChannelId(entity.getChannelId());
+				MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
 				if (null != msgIdTableEntity||msgId!=null) channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
