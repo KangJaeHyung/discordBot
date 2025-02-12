@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -20,7 +22,7 @@ import loaSSalmuckBot.com.api.jpa.userBan.UserBanEntity;
 import loaSSalmuckBot.com.api.jpa.userBan.UserBanRepository;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatEntity;
 import loaSSalmuckBot.com.api.jpa.userChat.UserChatRepository;
-import net.dv8tion.jda.api.JDA;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -31,6 +33,7 @@ import net.dv8tion.jda.api.utils.FileUpload;
 
 @Service
 @Transactional
+@Slf4j
 public class DiscordService {
 	@Autowired
 	public VoiceChannelRepository voiceChannelRepository;
@@ -49,8 +52,9 @@ public class DiscordService {
 	private UserRepository userRepository;
 
 	public void setBirthday(String memberId, Date date) {
-				
+		log.info("setBirthday : " + memberId + " " + date);
 		UserEntity userEntity = userRepository.findById(memberId).orElse(new UserEntity());
+		log.info("Setting birthday in UTC: " + date.toInstant().atZone(ZoneOffset.UTC).toLocalDate());
 		userEntity.setBirthDate(date);
 		userEntity.setUserId(memberId); 
 		userRepository.save(userEntity);

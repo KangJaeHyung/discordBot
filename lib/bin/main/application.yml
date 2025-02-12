@@ -7,6 +7,10 @@ spring:
       use-new-id-generator-mappings: true 
     generate-ddl: false
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
 
 
 

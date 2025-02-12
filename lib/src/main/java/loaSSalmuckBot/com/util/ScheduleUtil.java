@@ -1,10 +1,15 @@
 package loaSSalmuckBot.com.util;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,7 +79,7 @@ public class ScheduleUtil {
 		List<UserEntity> users = userRepository.findAll(Sort.by(Sort.Direction.ASC, "birthDate"));
 		List<UserEntity> birthUsers = new ArrayList<>();
 		TextChannel channel = guild.getTextChannelById(voiceChannelRepository.findByGiven(Given.BIRTHCHAN2).getChannelId());
-		log.info("users : {}", users);
+
 		
 		if(channel == null) return;
 		
@@ -95,7 +100,7 @@ public class ScheduleUtil {
 				birthUsers.add(user);
 			}
 		}
-		
+		log.info("birthUsers {}",birthUsers);
 		// 생일인 유저들 처리
 		for(UserEntity birthUser : birthUsers) {
 			// 캐시를 무시하고 멤버 조회
@@ -154,8 +159,17 @@ public class ScheduleUtil {
 	}
 	
 
-	@Scheduled(cron = "0 5 0 * * *") // 매일 0시 5분 0초에 실행
+	@PostConstruct
+	public void init() {
+		// 스케줄러의 기본 시간대를 UTC로 설정
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
+	
+	// 한국 시간(KST) 기준으로 실행
+	@Scheduled(cron = "0 5 0 * * *", zone = "Asia/Seoul")
 	public void checkUserInfo() {
+		log.info("refresh user info... Current KST time: {}", 
+			ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
 		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
 //		roles.add(jda.getGuildById(oddGuild).getRoleById(subGuildMaster));

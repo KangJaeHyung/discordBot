@@ -5,6 +5,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.time.ZoneOffset;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -97,6 +98,11 @@ public class BirthChannelListener extends ListenerAdapter {
 			// 먼저 기존의 메시지를 삭제
 			if (channel != null) {
 				System.out.println("메세지 보내기");
+				channel.getHistory().getRetrievedHistory().forEach(message -> {
+					if(message.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
+						msgId = message.getId();
+					}
+				});
 				if(null != msgId) channel.deleteMessageById(msgId).queue();
 				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
 						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
@@ -180,7 +186,9 @@ public class BirthChannelListener extends ListenerAdapter {
 
 		        try {
 		            // LocalDate로 변환하여 반환
-		        	Date d = java.sql.Date.valueOf(LocalDate.of(2000, month, day));
+		        	LocalDate birthDate = LocalDate.of(2000, month, day);
+		        	// UTC 기준으로 시간을 설정하여 날짜 변환 문제 방지
+		        	Date d = Date.from(birthDate.atStartOfDay(ZoneOffset.UTC).toInstant());
 		        	
 		        	discordService.setBirthday(event.getMember().getId(), d);
 		        } catch (DateTimeParseException e) {
