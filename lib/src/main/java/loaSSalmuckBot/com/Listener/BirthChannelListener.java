@@ -82,47 +82,6 @@ public class BirthChannelListener extends ListenerAdapter {
 			System.out.println("채널이 없습니다");
 		}
 	}
-
-
-	
-	@Override
-	public void onReady(ReadyEvent event) {
-		// 봇이 준비되면 실행되는 이벤트
-		System.out.println("봇이 준비되었습니다");
-		// 생일 채널에 메시지를 보냄
-		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
-		if (entity != null) {
-			TextChannel channel = event.getJDA().getGuildById(entity.getGuildId())
-					.getTextChannelById(entity.getChannelId());
-			// 먼저 기존의 메시지를 삭제
-			if (channel != null) {
-				System.out.println("메세지 보내기");
-				channel.getHistory().getRetrievedHistory().forEach(message -> {
-					if(message.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
-						msgId = message.getId();
-					}
-				});
-				MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
-				if (msgIdTableEntity != null) {
-					channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
-				} else if (msgId != null) {
-					channel.deleteMessageById(msgId).queue();
-				}
-				MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
-						.addActionRow(Button.primary("set_birthday", "생일 설정하기"),Button.secondary("month_birthday", "이번달 생일자 보기"),Button.secondary("all_birthday", "전체 생일 보기"))
-						.build();
-
-				channel.sendMessage(message).queue(t -> msgId = t.getId());
-				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
-				msgIdTableEntity2.setChannelId(entity.getChannelId());
-				msgIdTableEntity2.setMsgId(msgId);
-				msgIdTableRepository.save(msgIdTableEntity2);
-			} else {
-				System.out.println("채널이 없습니다");
-			}
-		}
- 
-	}
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent event) {
 		if (event.getComponentId().equals("set_birthday")) {
