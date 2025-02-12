@@ -73,11 +73,14 @@ public class BirthChannelListener extends ListenerAdapter {
 							Button.secondary("all_birthday", "전체 생일 보기"))
 					.build();
 
-			channel.sendMessage(message).queue(t -> msgId = t.getId());
-			MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
-			msgIdTableEntity2.setChannelId(entity.getChannelId());
-			msgIdTableEntity2.setMsgId(msgId);
-			msgIdTableRepository.save(msgIdTableEntity2);
+			channel.sendMessage(message).queue(t ->{
+				msgId = t.getId();
+				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
+				msgIdTableEntity2.setChannelId(entity.getChannelId());
+				msgIdTableEntity2.setMsgId(t.getId());
+				msgIdTableRepository.save(msgIdTableEntity2);
+			} );
+			
 		} else {
 			System.out.println("채널이 없습니다");
 		}
