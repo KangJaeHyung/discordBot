@@ -184,4 +184,14 @@ public class VoiceService {
 		
 		return voiceChannelRepository.findAll();
 	}
+
+    public void createChatChannel(SlashCommandInteractionEvent event) {
+        TextChannel channel = event.getOption("channel").getAsChannel().asTextChannel();
+		if (voiceChannelRepository.findByChannelIdAndGiven(channel.getId(), Given.CHATCHAN).isPresent()) {
+			event.reply("이미 채팅채널 이벤트가 부여가 되어 있습니다.").queue();
+			return;
+		}
+		this.createChannel(Given.CHATCHAN, channel);
+		event.reply("**" + channel.getName() + "** 채팅채널 생성이 완료 되었습니다.").queue();
+    }
 }
