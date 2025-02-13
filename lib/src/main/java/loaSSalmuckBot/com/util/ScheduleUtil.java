@@ -316,7 +316,7 @@ public class ScheduleUtil {
                     .setEmbeds(embed.build())
 					.addActionRow(
                         Button.success("create_channel", "채널 생성"),
-                        Button.secondary("show_channel", "생성된 채널 보기")
+                        Button.secondary("show_channel", "채널 설정 변경")
                     )
 					.build();
 
