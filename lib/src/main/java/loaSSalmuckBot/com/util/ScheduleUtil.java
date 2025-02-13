@@ -315,7 +315,7 @@ public class ScheduleUtil {
 			MessageCreateData message = new MessageCreateBuilder()
                     .setEmbeds(embed.build())
 					.addActionRow(
-                        Button.success("create_channel", "공간 생성"),
+                        Button.success("create_channel", "채널 생성"),
                         Button.secondary("show_channel", "생성된 채널 보기")
                     )
 					.build();

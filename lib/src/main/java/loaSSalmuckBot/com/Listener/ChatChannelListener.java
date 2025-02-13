@@ -61,7 +61,7 @@ public class ChatChannelListener extends ListenerAdapter {
                     .setRequired(true)
                     .build();
 
-            Modal modal = Modal.create("create_voice_channel", "공간 이름을 입력해주세요.")
+            Modal modal = Modal.create("create_voice_channel", "채널 이름을 입력해주세요.")
                     .addActionRow(nameInput)
                     .addActionRow(userLimitInput)
                     .build();
@@ -184,7 +184,7 @@ public class ChatChannelListener extends ListenerAdapter {
                         event.getGuild().moveVoiceMember(event.getMember(), newChannel).queue();
                     }
                     
-                    event.reply("'" + channelName + "' 공간이 생성되었습니다!").setEphemeral(true).queue();
+                    event.reply("'" + channelName + "' 채널이 생성되었습니다!").setEphemeral(true).queue();
                 } catch (Exception e) {
                     event.reply("채널 생성 중 오류가 발생했습니다.").setEphemeral(true).queue();
                 }
