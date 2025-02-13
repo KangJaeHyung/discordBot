@@ -160,21 +160,32 @@ public class ChatChannelListener extends ListenerAdapter {
             }
         } else if (event.getModalId().equals("create_voice_channel")) {
             ModalMapping nameInput = event.getValue("channel_name");
-			ModalMapping userLimitInput = event.getValue("user_limit");
+            ModalMapping userLimitInput = event.getValue("user_limit");
             if (nameInput != null) {
                 String channelName = nameInput.getAsString();
-				int userLimit = Integer.parseInt(userLimitInput.getAsString());
-                // TODO: 여기에 실제 채널 생성 로직 구현
-				Category category = 	event.getGuild().getCategoryById("943364697560850482");
-				VoiceChannel newChannel = null;
-				if(userLimit == 0){
-					newChannel = category.createVoiceChannel(channelName).complete();
-				}else{
-					newChannel = category.createVoiceChannel(channelName).setUserlimit(userLimit).complete();
-				}
-				VoiceChannelListener.newChannels.add(newChannel.getId());
-				event.getGuild().moveVoiceMember(event.getMember(), newChannel).queue();
-                event.reply("'" + channelName + "' 공간이 생성되었습니다!").setEphemeral(true).queue();
+                int userLimit = Integer.parseInt(userLimitInput.getAsString());
+                
+                Category category = event.getGuild().getCategoryById("943364697560850482");
+                VoiceChannel newChannel = null;
+                
+                try {
+                    // 채널 생성
+                    if(userLimit == 0) {
+                        newChannel = category.createVoiceChannel(channelName).complete();
+                    } else {
+                        newChannel = category.createVoiceChannel(channelName).setUserlimit(userLimit).complete();
+                    }
+                    VoiceChannelListener.newChannels.add(newChannel.getId());
+                    
+                    // 멤버가 이미 음성 채널에 있는지 확인 후 이동
+                    if (event.getMember().getVoiceState() != null && event.getMember().getVoiceState().inAudioChannel()) {
+                        event.getGuild().moveVoiceMember(event.getMember(), newChannel).queue();
+                    }
+                    
+                    event.reply("'" + channelName + "' 공간이 생성되었습니다!").setEphemeral(true).queue();
+                } catch (Exception e) {
+                    event.reply("채널 생성 중 오류가 발생했습니다.").setEphemeral(true).queue();
+                }
             }
         }
     }
