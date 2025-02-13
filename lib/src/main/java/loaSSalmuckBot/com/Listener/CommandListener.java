@@ -480,7 +480,7 @@ public class CommandListener extends ListenerAdapter {
 		data.add(Commands.slash("play", "노래를 재생 합니다.").addOption(OptionType.STRING, "name", "재생할 노래 이름", true));
 		data.add(Commands.slash("생일설정", "내 생일을 설정 합니다.").addOption(OptionType.STRING, "date", "생일 4자리 숫자 ex)0307", true).addOption(OptionType.USER,"member","변경할 유저", false));
 		data.add(Commands.slash("생일채널설정", "생일 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
-		data.add(Commands.slash("채팅채널", "채팅 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
+		data.add(Commands.slash("채팅채널설정", "채팅 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
 		data.add(Commands.slash("생일알람채널설정", "생일 알람 채널 이벤트를 부여합니다.").addOption(OptionType.CHANNEL, "channel", "채널이름", true));	
 		data.add(Commands.slash("생일삭제", "생일 삭제 설정 합니다.").addOption(OptionType.USER,"member","삭제할 유저", true));
 //		data.add(Commands.slash("유저생성","유저 생성합니다.").addOption(OptionType.USER, "user", "유저" , true));
