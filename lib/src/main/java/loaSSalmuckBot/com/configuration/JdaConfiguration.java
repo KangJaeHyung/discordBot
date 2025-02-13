@@ -8,13 +8,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import loaSSalmuckBot.com.Listener.BirthChannelListener;
+import loaSSalmuckBot.com.Listener.ChatChannelListener;
 import loaSSalmuckBot.com.Listener.CommandListener;
 import loaSSalmuckBot.com.Listener.GuildListener;
 import loaSSalmuckBot.com.Listener.VoiceChannelListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
@@ -39,7 +39,7 @@ public class JdaConfiguration {
 //				.setMemberCachePolicy(MemberCachePolicy.ALL)
 				.enableCache(CacheFlag.VOICE_STATE).setMemberCachePolicy(MemberCachePolicy.DEFAULT).build();
 
-		jda.addEventListener(chattingListener(), voiceChannelListener(), myApplicationCommand(),birthChannelListener());
+		jda.addEventListener(chattingListener(), voiceChannelListener(), myApplicationCommand(),birthChannelListener(),chatChannelListener());
         return jda;
     }
     
@@ -58,5 +58,10 @@ public class JdaConfiguration {
     @Bean
     public GuildListener chattingListener() {
         return new GuildListener();
+    }
+
+    @Bean
+    public ChatChannelListener chatChannelListener() {
+        return new ChatChannelListener();
     }
 }
