@@ -38,8 +38,8 @@ public class JdaConfiguration {
 						EnumSet.allOf(GatewayIntent.class))
 //				.setMemberCachePolicy(MemberCachePolicy.ALL)
 				.enableCache(CacheFlag.VOICE_STATE).setMemberCachePolicy(MemberCachePolicy.DEFAULT).build();
-
-		jda.addEventListener(chattingListener(), voiceChannelListener(), myApplicationCommand(),birthChannelListener(jda),chatChannelListener(jda));
+                jda.addEventListener(chattingListener(), voiceChannelListener(), myApplicationCommand(),birthChannelListener(),chatChannelListener());
+		
         return jda;
     }
     
@@ -52,10 +52,8 @@ public class JdaConfiguration {
         return new VoiceChannelListener();
     }
     @Bean
-    public BirthChannelListener birthChannelListener(JDA jda) {
-        BirthChannelListener listener = new BirthChannelListener();
-        jda.addEventListener(listener);
-        return listener;
+    public BirthChannelListener birthChannelListener() {
+        return new BirthChannelListener();
     }
     @Bean
     public GuildListener chattingListener() {
@@ -63,9 +61,8 @@ public class JdaConfiguration {
     }
 
     @Bean
-    public ChatChannelListener chatChannelListener(JDA jda) {
-        ChatChannelListener listener = new ChatChannelListener();
-        jda.addEventListener(listener);
-        return listener;
+    public ChatChannelListener chatChannelListener() {
+        return new ChatChannelListener();
     }
+    
 }

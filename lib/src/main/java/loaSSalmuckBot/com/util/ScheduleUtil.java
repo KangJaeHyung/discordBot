@@ -29,17 +29,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import loaSSalmuckBot.com.Listener.dto.Given;
 import loaSSalmuckBot.com.LostArkDto.ArmoryProfile;
+import loaSSalmuckBot.com.api.jpa.channel.MsgIdTableEntity;
+import loaSSalmuckBot.com.api.jpa.channel.MsgIdTableRepository;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelEntity;
 import loaSSalmuckBot.com.api.jpa.channel.VoiceChannelRepository;
 import loaSSalmuckBot.com.api.jpa.user.UserEntity;
 import loaSSalmuckBot.com.api.jpa.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.concurrent.Task;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 @Slf4j
 @Component
@@ -262,5 +268,101 @@ public class ScheduleUtil {
 	
 	
 	static private List<String> msgIds = new ArrayList<>();
+	static private String msgId1 = null;
+
+	@Autowired
+	private MsgIdTableRepository msgIdTableRepository;
+
+
+	@Scheduled(fixedDelay = 300000 )//5분마다
+	public void resetMsgChat() {
+		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.CHATCHAN);
+		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
+		if (channel != null) {
+			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
+			if (msgIdTableEntity != null) {
+				channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+			} else if (msgId1 != null) {
+				channel.deleteMessageById(msgId1).queue();
+			}
+
+            // 임베드 생성
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("🔊 음성채널 이용 안내");
+            embed.setDescription("음성채널을 편리하게 이용하기 위한 안내입니다.");
+            
+            // 규칙 섹션
+            embed.addField("📌사용 규칙", 
+                "🔸 레이드, 종합 게임, 수다 등 다양한 용도로 사용할 수 있습니다.\n" +
+                "🔸 채널 생성 시, 주제에 맞는 적절한 이름을 입력해주세요.\n" +
+                "🔸 개설한 채널의 목적에 맞게 활용해주세요.\n" +
+                "🔸 필요할 경우 채널 이름 변경 버튼을 눌러 수정할 수 있습니다.", false);
+
+            // 사용 방법 섹션
+            embed.addField("🚀 사용 방법", 
+                "1⃣ 토크 채널에 입장하세요.\n" +
+                "2⃣ 채널 생성 버튼을 눌러 새로운 음성 채널을 만드세요.\n" +
+                "3⃣ 원하는 주제에 맞게 채널명을 입력하세요.\n" +
+                "4⃣ 채널 상태 설정에서 채널의 상태를 변경할 수 있습니다.", false);
+
+            // 추가 안내 섹션
+            embed.addField("💡 추가 안내", 
+                "생성된 채널은 게스트도 자유롭게 이용할 수 있습니다", false);
+
+            embed.setColor(java.awt.Color.decode("#7289DA")); // 디스코드 블루 컬러 
+            embed.setFooter("✅ 원활한 이용을 위해 규칙을 지켜주세요! 😊", null);
+
+			MessageCreateData message = new MessageCreateBuilder()
+                    .setEmbeds(embed.build())
+					.addActionRow(
+                        Button.success("create_channel", "공간 생성"),
+                        Button.secondary("show_channel", "생성된 채널 보기")
+                    )
+					.build();
+
+			channel.sendMessage(message).queue(t ->{
+				msgId1 = t.getId();
+				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
+				msgIdTableEntity2.setChannelId(entity.getChannelId());
+				msgIdTableEntity2.setMsgId(t.getId());
+				msgIdTableRepository.save(msgIdTableEntity2);
+			} );
+			
+		} else {
+			System.out.println("채널이 없습니다");
+		}
+	}
+
+	static private String msgId2 = null;
+	
+	@Scheduled(fixedDelay = 600000 )//10분마다
+	public void resetMsgBirth() {
+		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
+		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
+		if (channel != null) {
+			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
+			if (msgIdTableEntity != null) {
+				channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
+			} else if (msgId2 != null) {
+				channel.deleteMessageById(msgId2).queue();
+			}
+			MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
+					.addActionRow(Button.primary("set_birthday", "생일 설정하기"),
+							Button.secondary("month_birthday", "이번달 생일자 보기"),
+							Button.secondary("all_birthday", "전체 생일 보기"))
+					.build();
+
+			channel.sendMessage(message).queue(t ->{
+				msgId2 = t.getId();
+				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
+				msgIdTableEntity2.setChannelId(entity.getChannelId());
+				msgIdTableEntity2.setMsgId(t.getId());
+				msgIdTableRepository.save(msgIdTableEntity2);
+			} );
+			
+		} else {
+			System.out.println("채널이 없습니다");
+		}
+	}
 
 }

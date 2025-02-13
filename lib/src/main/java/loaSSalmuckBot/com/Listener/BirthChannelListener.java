@@ -44,47 +44,10 @@ public class BirthChannelListener extends ListenerAdapter {
 	
 	@Autowired
 	private DiscordService discordService;
-		
-	@Autowired
-	private  JDA jda;
 	
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private MsgIdTableRepository msgIdTableRepository;
-	
-	
-	
-	@Scheduled(fixedDelay = 600000 )//10분마다
-	public void resetMsg() {
-		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
-		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
-		if (channel != null) {
-			MsgIdTableEntity msgIdTableEntity = msgIdTableRepository.findById(entity.getChannelId()).orElse(null);
-			if (msgIdTableEntity != null) {
-				channel.deleteMessageById(msgIdTableEntity.getMsgId()).queue();
-			} else if (msgId != null) {
-				channel.deleteMessageById(msgId).queue();
-			}
-			MessageCreateData message = new MessageCreateBuilder().setContent("# 생일을 설정하려면 아래 버튼을 눌러주세요.")
-					.addActionRow(Button.primary("set_birthday", "생일 설정하기"),
-							Button.secondary("month_birthday", "이번달 생일자 보기"),
-							Button.secondary("all_birthday", "전체 생일 보기"))
-					.build();
-
-			channel.sendMessage(message).queue(t ->{
-				msgId = t.getId();
-				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
-				msgIdTableEntity2.setChannelId(entity.getChannelId());
-				msgIdTableEntity2.setMsgId(t.getId());
-				msgIdTableRepository.save(msgIdTableEntity2);
-			} );
-			
-		} else {
-			System.out.println("채널이 없습니다");
-		}
-	}
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent event) {
 		if (event.getComponentId().equals("set_birthday")) {
