@@ -47,29 +47,27 @@ public class ChatChannelListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (event.getComponentId().equals("create_channel")) {
-            // 텍스트 입력 필드 생성
             TextInput nameInput = TextInput.create("channel_name", "이름", TextInputStyle.SHORT)
                     .setPlaceholder("예) 자유-수다방")
                     .setMinLength(2)
                     .setMaxLength(30)
                     .setRequired(true)
                     .build();
-			TextInput userLimitInput = TextInput.create("user_limit", "인원 제한", TextInputStyle.SHORT)
-					.setPlaceholder("예) 8 , 0적을시 무제한")
-					.setMinLength(1)
-					.setMaxLength(3)
-					.setRequired(true)
-					.build();
 
-            // 모달 생성
-            Modal modal = Modal.create("create_voice_channel", "공간 이름을 입력해주세요.")
-                    .addActionRow(nameInput, userLimitInput)
+            TextInput userLimitInput = TextInput.create("user_limit", "인원 제한", TextInputStyle.SHORT)
+                    .setPlaceholder("예) 8 , 0적을시 무제한")
+                    .setMinLength(1)
+                    .setMaxLength(3)
+                    .setRequired(true)
                     .build();
 
-            // 모달 표시
-            event.replyModal(modal).queue();
-			return;
+            Modal modal = Modal.create("create_voice_channel", "공간 이름을 입력해주세요.")
+                    .addActionRow(nameInput)
+                    .addActionRow(userLimitInput)
+                    .build();
 
+            event.replyModal(modal).queue();
+            return;
         }
 
 		if (event.getComponentId().equals("show_channel")) {
