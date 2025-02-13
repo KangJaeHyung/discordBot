@@ -138,6 +138,8 @@ public class ChatChannelListener extends ListenerAdapter {
                         .addActionRow(userLimitInput)
                         .build();
 
+                // 이전 메시지 삭제 후 모달 표시
+                event.getMessage().delete().queue();
                 event.replyModal(modal).queue();
             }
         }
