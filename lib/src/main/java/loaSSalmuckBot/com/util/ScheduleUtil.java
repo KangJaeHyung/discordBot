@@ -274,7 +274,7 @@ public class ScheduleUtil {
 	private MsgIdTableRepository msgIdTableRepository;
 
 
-	@Scheduled(fixedDelay = 300000 )//5분마다
+	@Scheduled(fixedDelay = 86400000 )//1일의 한번
 	public void resetMsgChat() {
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.CHATCHAN);
 		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
@@ -320,7 +320,7 @@ public class ScheduleUtil {
                     )
 					.build();
 
-			channel.sendMessage(message).queue(t ->{
+			channel.sendMessage(message).setAllowedMentions(null).queue(t ->{
 				msgId1 = t.getId();
 				MsgIdTableEntity msgIdTableEntity2 = new MsgIdTableEntity();
 				msgIdTableEntity2.setChannelId(entity.getChannelId());
@@ -335,7 +335,7 @@ public class ScheduleUtil {
 
 	static private String msgId2 = null;
 	
-	@Scheduled(fixedDelay = 600000 )//10분마다
+	@Scheduled(fixedDelay = 86400000 )//1일의 한번
 	public void resetMsgBirth() {
 		VoiceChannelEntity entity = voiceChannelRepository.findByGiven(Given.BIRTHCHAN);
 		TextChannel channel = jda.getGuildById(entity.getGuildId()).getTextChannelById(entity.getChannelId());
