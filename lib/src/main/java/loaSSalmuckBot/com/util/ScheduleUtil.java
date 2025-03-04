@@ -100,6 +100,9 @@ public class ScheduleUtil {
 		
 		// 생일인 유저 필터링
 		for(UserEntity user : users) {
+			log.info("user birthDate {}",user.getBirthDate());
+			log.info("new Date {}",new Date());
+
 			if(user.getBirthDate() == null) continue;
 			if(user.getBirthDate().getMonth() == new Date().getMonth() && 
 			   user.getBirthDate().getDate() == new Date().getDate()) {
@@ -170,7 +173,6 @@ public class ScheduleUtil {
 
 	}
 	
-	// 한국 시간(KST) 기준으로 실행
 	@Scheduled(cron = "0 5 0 * * *")
 	public void checkUserInfo() {
 		List<Role> roles = new ArrayList<>();
@@ -240,6 +242,8 @@ public class ScheduleUtil {
 		}
 		msgIds.clear();
 		for(UserEntity user : users) {
+			log.info("user birthDate {}",user.getBirthDate());
+			log.info("new Date {}",new Date());
 			if(user.getBirthDate()==null) continue;
             if(user.getBirthDate().getMonth() == new Date().getMonth() && user.getBirthDate().getDate() == new Date().getDate()) {
                 birthUsers.add(user);
