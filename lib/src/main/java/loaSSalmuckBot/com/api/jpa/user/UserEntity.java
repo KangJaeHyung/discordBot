@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -28,6 +30,7 @@ public class UserEntity {
 	private String userRole;
 	@Column(name = "user_class")
 	private String userClass;
+	@Temporal(TemporalType.DATE)
 	@Column(name = "birth_Date")
 	private Date birthDate;
 }
