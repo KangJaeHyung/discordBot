@@ -167,16 +167,12 @@ public class ScheduleUtil {
 
 	@PostConstruct
 	public void init() {
-		// 스케줄러의 기본 시간대를 UTC로 설정
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
 	}
 	
 	// 한국 시간(KST) 기준으로 실행
-	@Scheduled(cron = "0 5 0 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 5 0 * * *")
 	public void checkUserInfo() {
-		log.info("refresh user info... Current KST time: {}", 
-			ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
-		log.info("refresh user info...");
 		List<Role> roles = new ArrayList<>();
 //		roles.add(jda.getGuildById(oddGuild).getRoleById(subGuildMaster));
 //		roles.add();
