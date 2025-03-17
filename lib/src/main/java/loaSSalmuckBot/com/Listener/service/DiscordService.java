@@ -54,7 +54,6 @@ public class DiscordService {
 	public void setBirthday(String memberId, Date date) {
 		log.info("setBirthday : " + memberId + " " + date);
 		UserEntity userEntity = userRepository.findById(memberId).orElse(new UserEntity());
-		log.info("Setting birthday in UTC: " + date.toInstant().atZone(ZoneOffset.UTC).toLocalDate());
 		userEntity.setBirthDate(date);
 		userEntity.setUserId(memberId); 
 		userRepository.save(userEntity);
